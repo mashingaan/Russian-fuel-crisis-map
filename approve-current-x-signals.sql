@@ -35,9 +35,8 @@ where media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
 
 update public.fuel_signals
 set
-  status = 'approved',
-  confidence = 'Verified by moderator: public X video source',
-  reviewer_note = 'Approved as a gas-station anomaly in Oryol Oblast, 2026-06-28.'
+  status = 'rejected',
+  reviewer_note = 'Rejected: user did not submit an Oryol signal for this source. Source signal is Surgut only.'
 where media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
   and title = 'Oryol Oblast gas-station situation worsening';
 

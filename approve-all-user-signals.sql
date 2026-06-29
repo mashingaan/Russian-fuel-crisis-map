@@ -2,21 +2,12 @@
 -- Approves all real user-loaded signals from the current collection batch.
 -- Keeps TEST rows out of the public map.
 
--- 1) Correct the misclassified Oryol duplicate from the Surgut X post.
+-- 1) Reject the misclassified Oryol duplicate from the Surgut X post.
 -- The user-provided signal was Surgut. Do not keep a separate Oryol point.
 update public.fuel_signals
 set
-  title = 'Surgut gasoline availability problem',
-  region = 'Khanty-Mansi Autonomous Okrug',
-  place = 'Surgut, rounded',
-  lat = 61.30,
-  lng = 73.40,
-  type = 'station',
-  severity = 'watch',
-  status = 'approved',
-  note = 'X video report: Surgut, Khanty-Mansi Autonomous Okrug. Gasoline availability problem. The earlier Oryol label on this source was removed because the user-provided signal location was Surgut.',
-  confidence = 'Verified by moderator: public X video source; city corrected to Surgut.',
-  reviewer_note = 'Corrected from Oryol to Surgut per source signal and approved in launch batch.'
+  status = 'rejected',
+  reviewer_note = 'Rejected: user did not submit an Oryol signal for this source. This was a misclassified duplicate of the Surgut report.'
 where coalesce(title, '') not ilike 'TEST%'
   and media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
   and (
@@ -24,6 +15,23 @@ where coalesce(title, '') not ilike 'TEST%'
     or place ilike '%Oryol%'
     or title ilike '%Oryol%'
   );
+
+-- Restore the single valid Surgut row if it exists.
+update public.fuel_signals
+set
+  status = 'approved',
+  title = 'Surgut gasoline availability problem',
+  region = 'Khanty-Mansi Autonomous Okrug',
+  place = 'Surgut, rounded',
+  lat = 61.30,
+  lng = 73.40,
+  type = 'station',
+  severity = 'watch',
+  note = 'X video report: Surgut, Khanty-Mansi Autonomous Okrug. Gasoline is reportedly already a problem even there. Treat as gasoline availability anomaly until moderator verifies exact fuel type and station status.',
+  fuel = 'Gasoline, availability problem reported',
+  confidence = 'Verified by moderator: public X video source',
+  reviewer_note = 'Approved as the only public Surgut signal for this source. Misclassified Oryol duplicate rejected.'
+where id = '5b542034-9a2f-4c94-ae1c-af8174b4555c';
 
 -- 2) Approve the known X/public-source fuel and infrastructure signals.
 update public.fuel_signals
