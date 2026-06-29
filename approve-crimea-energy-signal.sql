@@ -2,6 +2,27 @@
 -- User-provided Telegram screenshot, 2026-06-29 07:37 MSK.
 -- Public map point is deliberately rounded; do not expose the exact coordinate from the post.
 
+-- Repair public submit/read policies first. This keeps the X-public workflow live:
+-- users submit pending signals, the moderator approves selected rows.
+alter table public.fuel_signals enable row level security;
+
+grant usage on schema public to anon;
+grant select, insert on public.fuel_signals to anon;
+
+drop policy if exists "public can submit pending fuel signals" on public.fuel_signals;
+create policy "public can submit pending fuel signals"
+on public.fuel_signals
+for insert
+to anon
+with check (status = 'pending');
+
+drop policy if exists "public can read approved fuel signals" on public.fuel_signals;
+create policy "public can read approved fuel signals"
+on public.fuel_signals
+for select
+to anon
+using (status = 'approved');
+
 do $$
 begin
   if exists (
