@@ -62,6 +62,21 @@ where status = 'pending'
 -- where media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
 --   and title = 'Surgut gasoline availability problem';
 
+-- Approve the Sevastopol CDEK parcel delivery disruption signal
+-- This is adjacent logistics stress, not a direct fuel-shortage signal.
+update public.fuel_signals
+set
+  status = 'approved',
+  confidence = 'Verified by moderator: user-submitted local video',
+  reviewer_note = 'Approved as a regional logistics anomaly in Sevastopol, 2026-06-29.'
+where status = 'pending'
+  and title = 'Sevastopol parcel delivery disruption report';
+
+-- After running supabase-issue-type-migration.sql, classify it as:
+-- update public.fuel_signals
+-- set issue_type = 'unconfirmed_anomaly'
+-- where title = 'Sevastopol parcel delivery disruption report';
+
 -- Reject a signal by id
 -- update public.fuel_signals
 -- set status = 'rejected', reviewer_note = 'Rejected after moderator review.'
