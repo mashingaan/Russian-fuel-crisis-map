@@ -875,19 +875,6 @@ document.getElementById("clearLocal").addEventListener("click", () => {
   render();
 });
 
-document.getElementById("copyDigest").addEventListener("click", async () => {
-  const digest = buildDigest();
-  try {
-    await navigator.clipboard.writeText(digest);
-    document.getElementById("copyDigest").textContent = tr("copied");
-    setTimeout(() => {
-      document.getElementById("copyDigest").textContent = tr("copyX");
-    }, 1400);
-  } catch {
-    window.prompt(tr("promptCopy"), digest);
-  }
-});
-
 applyTranslations();
 document.getElementById("signalDateInput").value = new Date().toISOString().slice(0, 10);
 render();
