@@ -259,6 +259,7 @@ const seedEvents = [
     fuel: T("AI-92 / AI-95", "АИ-92 / АИ-95"),
     lossWeight: 9,
     confidence: T("High", "Высокая"),
+    observedAt: "2026-06-21",
     source: "rferlCrimeaHalt",
     sourceUrl: "https://www.rferl.org/a/fuel-crisis-hits-russian-occupied-crimea/33773280.html",
   },
@@ -275,6 +276,7 @@ const seedEvents = [
     fuel: T("Gasoline", "Бензин"),
     lossWeight: 6,
     confidence: T("Medium", "Средняя"),
+    observedAt: "2026-06-29",
     source: "guardian",
     sourceUrl: "https://www.theguardian.com/world/2026/jun/29/ukraine-war-briefing-putin-expects-us-negotiators-moscow-fuel-rationing-siberia",
   },
@@ -291,6 +293,7 @@ const seedEvents = [
     fuel: T("Gasoline", "Бензин"),
     lossWeight: 6,
     confidence: T("Medium", "Средняя"),
+    observedAt: "2026-06-29",
     source: "ap",
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
   },
@@ -307,6 +310,7 @@ const seedEvents = [
     fuel: T("Gasoline / diesel", "Бензин / дизель"),
     lossWeight: 6,
     confidence: T("Medium", "Средняя"),
+    observedAt: "2026-06-24",
     source: "rferlSpread",
     sourceUrl: "https://www.rferl.org/a/ukraine-russia-oil-refinery-fuel-shortages-kremlin/33787903.html",
   },
@@ -338,6 +342,7 @@ const seedEvents = [
     fuel: T("Gasoline / diesel", "Бензин / дизель"),
     lossWeight: 7,
     confidence: T("Medium", "Средняя"),
+    observedAt: "2026-06-27",
     source: "meduzaRegions",
     sourceUrl: "https://meduza.io/feature/2026/06/27/karta-benzinovogo-krizisa-v-kakih-regionah-rossii-topliva-ne-hvataet-osobenno-silno",
   },
@@ -354,6 +359,7 @@ const seedEvents = [
     fuel: T("Refinery", "НПЗ"),
     lossWeight: 8,
     confidence: T("High", "Высокая"),
+    observedAt: "2026-06-28",
     source: "ap",
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
   },
@@ -370,6 +376,7 @@ const seedEvents = [
     fuel: T("Refinery", "НПЗ"),
     lossWeight: 7,
     confidence: T("Medium", "Средняя"),
+    observedAt: "2026-06-28",
     source: "guardian",
     sourceUrl: "https://www.theguardian.com/world/2026/jun/29/ukraine-war-briefing-putin-expects-us-negotiators-moscow-fuel-rationing-siberia",
   },
@@ -682,13 +689,27 @@ function mediaPreviewHtml(url) {
   return `<video class="signal-video" src="${escapeHtml(url)}" controls preload="metadata" playsinline></video>`;
 }
 
+const UNKNOWN_DATE_SORT = "0000-00-00";
+
+function dateOnly(value) {
+  if (!value) return "";
+  const text = String(value).trim();
+  const match = text.match(/^\d{4}-\d{2}-\d{2}/);
+  return match ? match[0] : text;
+}
+
+function isUnknownDate(value) {
+  return !value || value === UNKNOWN_DATE_SORT || value === "1970-01-01";
+}
+
 function eventDateValue(item) {
-  return item.observedAt || item.createdAt || "1970-01-01";
+  return dateOnly(item.observedAt || item.createdAt) || UNKNOWN_DATE_SORT;
 }
 
 function prettyDate(value) {
-  if (!value) return "No date";
-  const date = new Date(`${value}T00:00:00`);
+  if (isUnknownDate(value)) return lang === "ru" ? "Дата неизвестна" : "Date unknown";
+  const displayValue = dateOnly(value);
+  const date = new Date(`${displayValue}T00:00:00`);
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "short" });
 }
