@@ -799,19 +799,17 @@ function render() {
     .filter((region) => (state.activeLayer === "all" || state.activeLayer === "region") && state.severities.has(region.severity))
     .filter((region) => !state.query || `${searchableText(region.region)} ${searchableText(region.note)}`.toLowerCase().includes(state.query))
     .forEach((region) => {
-      const radius = 12000 + region.score * 850;
+      const radius = 9000 + Math.sqrt(region.score) * 3200;
       const circle = L.circle([region.lat, region.lng], {
         radius,
         color: severityColor(region.severity),
         fillColor: severityColor(region.severity),
-        fillOpacity: 0.18,
-        weight: 1,
+        fillOpacity: 0.08,
+        opacity: 0.72,
+        weight: 0.8,
+        interactive: true,
       }).addTo(regionLayer);
 
-      circle.bindPopup(`
-        <h3 class="popup-title">${textOf(region.region)}</h3>
-        <p class="popup-meta">${tr("stressIndex")}: ${region.score}/100<br>${tr("stationsRisk")}: ${region.affectedStations}<br>${textOf(region.note)}</p>
-      `);
       circle.on("click", () =>
         selectItem({
           title: region.region,
