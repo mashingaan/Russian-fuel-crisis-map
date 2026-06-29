@@ -57,6 +57,7 @@ Run these files in Supabase SQL Editor:
 2. `supabase-grants-fix.sql`, if anon permissions are missing
 3. `supabase-issue-type-migration.sql`, when you want `issue_type` persisted
 4. `supabase-video-storage.sql`, when you want direct video upload support
+5. `supabase-moderation-auth.sql`, when you want button-based moderation
 
 After running the issue type migration, set in `config.js`:
 
@@ -72,4 +73,13 @@ videoUploadEnabled: true
 
 ## Moderation
 
-Use `moderation-queries.sql` for common review queries and one-click approval templates.
+Preferred workflow:
+
+1. Create or sign in with your moderator email in Supabase Auth.
+2. Open `supabase-moderation-auth.sql`.
+3. Replace `YOUR_EMAIL@example.com` with that moderator email.
+4. Run the SQL once.
+5. Open `/moderate.html`.
+6. Review pending signals, edit wording/location if needed, then approve or reject with buttons.
+
+Use `moderation-queries.sql` only for bulk fixes or emergency SQL-level review.

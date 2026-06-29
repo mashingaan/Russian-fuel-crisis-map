@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fuel Stress Moderator</title>
+    <link rel="stylesheet" href="moderate.css" />
+  </head>
+  <body>
+    <main class="moderator-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OSINT map moderation</p>
+          <h1>Signal review</h1>
+        </div>
+        <div class="session-actions">
+          <span id="sessionLabel" class="session-label">Signed out</span>
+          <button id="refreshButton" class="ghost-button" type="button" disabled>Refresh</button>
+          <button id="signOutButton" class="ghost-button" type="button" hidden>Sign out</button>
+        </div>
+      </header>
+
+      <section id="authPanel" class="auth-panel">
+        <div>
+          <h2>Moderator access</h2>
+          <p>Sign in with the email added to the Supabase moderator allowlist.</p>
+        </div>
+        <form id="authForm" class="auth-form">
+          <label>
+            Email
+            <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
+          </label>
+          <label>
+            Password
+            <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Optional for magic link" />
+          </label>
+          <div class="auth-actions">
+            <button id="magicLinkButton" class="primary-button" type="button">Send magic link</button>
+            <button id="passwordButton" class="secondary-button" type="submit">Sign in</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="reviewPanel" class="review-panel" hidden>
+        <aside class="queue-panel">
+          <div class="queue-toolbar">
+            <div>
+              <h2>Queue</h2>
+              <p id="queueMeta">No rows loaded</p>
+            </div>
+            <select id="statusFilter" aria-label="Status filter">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+          <div id="signalList" class="signal-list" aria-live="polite"></div>
+        </aside>
+
+        <section class="detail-panel">
+          <div id="emptyDetail" class="empty-detail">
+            <h2>Select a signal</h2>
+            <p>Review source, coordinates and wording before approving it for the public map.</p>
+          </div>
+
+          <form id="detailForm" class="detail-form" hidden>
+            <div class="detail-header">
+              <div>
+                <p id="detailStatus" class="status-pill">pending</p>
+                <h2 id="detailTitle">Signal</h2>
+              </div>
+              <div class="decision-actions">
+                <button id="rejectButton" class="danger-button" type="button">Reject</button>
+                <button id="approveButton" class="primary-button" type="button">Approve</button>
+              </div>
+            </div>
+
+            <div class="field-grid">
+              <label class="wide">
+                Title
+                <input id="titleField" name="title" required />
+              </label>
+              <label>
+                Status
+                <select id="statusField" name="status">
+                  <option value="pending">pending</option>
+                  <option value="approved">approved</option>
+                  <option value="rejected">rejected</option>
+                </select>
+              </label>
+              <label>
+                Type
+                <select id="typeField" name="type">
+                  <option value="station">station</option>
+                  <option value="infrastructure">infrastructure</option>
+                  <option value="region">region</option>
+                </select>
+              </label>
+              <label>
+                Severity
+                <select id="severityField" name="severity">
+                  <option value="critical">critical</option>
+                  <option value="serious">serious</option>
+                  <option value="watch">watch</option>
+                </select>
+              </label>
+              <label>
+                Observed date
+                <input id="observedField" name="observed_at" type="date" />
+              </label>
+              <label>
+                Region
+                <input id="regionField" name="region" />
+              </label>
+              <label>
+                Place
+                <input id="placeField" name="place" />
+              </label>
+              <label>
+                Latitude
+                <input id="latField" name="lat" inputmode="decimal" />
+              </label>
+              <label>
+                Longitude
+                <input id="lngField" name="lng" inputmode="decimal" />
+              </label>
+              <label>
+                Fuel / asset
+                <input id="fuelField" name="fuel" />
+              </label>
+              <label>
+                Loss weight
+                <input id="lossField" name="loss_weight" type="number" min="0" max="10" />
+              </label>
+              <label class="wide">
+                Media URL
+                <input id="mediaField" name="media_url" placeholder="https://x.com/... or https://t.me/..." />
+              </label>
+              <label class="wide">
+                Description
+                <textarea id="noteField" name="note" rows="5"></textarea>
+              </label>
+              <label class="wide">
+                Verification
+                <input id="confidenceField" name="confidence" />
+              </label>
+              <label class="wide">
+                Reviewer note
+                <textarea id="reviewerField" name="reviewer_note" rows="3"></textarea>
+              </label>
+            </div>
+
+            <div class="form-footer">
+              <a id="sourceLink" class="source-link" href="#" target="_blank" rel="noreferrer">Open source</a>
+              <button id="saveButton" class="secondary-button" type="submit">Save edits</button>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="moderate.js" defer></script>
+  </body>
+</html>
