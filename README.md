@@ -35,7 +35,16 @@ The public map should show incident aggregates, not every signal as a separate m
 - drawer: overview, timeline, evidence and impact tabs
 - evidence: videos, X/Telegram/news links and local reports attached to the same incident
 
-The current frontend groups existing `fuel_signals` client-side. `supabase-incidents-schema.sql` contains the normalized future schema for `incidents` and `incident_signals`.
+The current frontend groups existing `fuel_signals` client-side. `supabase/sql/supabase-incidents-schema.sql` contains the normalized future schema for `incidents` and `incident_signals`.
+
+## Repository Layout
+
+- `index.html`, `app.js`, `styles.css`: public map
+- `moderate.html`, `moderate.js`, `moderate.css`: moderator console
+- `config.example.js`: template for local Supabase config
+- `supabase/sql`: database schema, policies, repair scripts and moderation queries
+- `docs/deployment.md`: deployment and Supabase setup notes
+- `docs/research`: source-backed research notes
 
 ## Local Run
 
@@ -63,11 +72,11 @@ For GitHub Pages:
 
 Run these files in Supabase SQL Editor:
 
-1. `supabase-schema.sql`
-2. `supabase-grants-fix.sql`, if anon permissions are missing
-3. `supabase-issue-type-migration.sql`, when you want `issue_type` persisted
-4. `supabase-video-storage.sql`, when you want direct video upload support
-5. `supabase-moderation-auth.sql`, when you want button-based moderation
+1. `supabase/sql/supabase-schema.sql`
+2. `supabase/sql/supabase-grants-fix.sql`, if anon permissions are missing
+3. `supabase/sql/supabase-issue-type-migration.sql`, when you want `issue_type` persisted
+4. `supabase/sql/supabase-video-storage.sql`, when you want direct video upload support
+5. `supabase/sql/supabase-moderation-auth.sql`, when you want button-based moderation
 
 After running the issue type migration, set in `config.js`:
 
@@ -86,7 +95,7 @@ videoUploadEnabled: true
 Preferred workflow:
 
 1. Create or sign in with your moderator email in Supabase Auth.
-2. Open `supabase-moderation-auth.sql`.
+2. Open `supabase/sql/supabase-moderation-auth.sql`.
 3. Replace `YOUR_EMAIL@example.com` with that moderator email.
 4. Run the SQL once.
 5. In Supabase Authentication URL Configuration, set:
@@ -95,6 +104,6 @@ Preferred workflow:
 6. Open `/moderate.html`.
 7. Review pending signals, edit wording/location if needed, then approve or reject with buttons.
 
-The moderator console also has `Repair launch rows` for the known launch-data corruption fix. Use it instead of running `repair-corrupted-public-signals.sql` manually after moderator auth is configured.
+The moderator console also has `Repair launch rows` for the known launch-data corruption fix. Use it instead of running `supabase/sql/repair-corrupted-public-signals.sql` manually after moderator auth is configured.
 
-Use `moderation-queries.sql` only for bulk fixes or emergency SQL-level review.
+Use `supabase/sql/moderation-queries.sql` only for bulk fixes or emergency SQL-level review.

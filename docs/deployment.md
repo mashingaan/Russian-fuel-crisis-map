@@ -5,14 +5,14 @@ The app works as a static site. By default, submissions are local-only demo data
 ## Public mode
 
 1. Create a Supabase project.
-2. Run `supabase-schema.sql` in the Supabase SQL editor.
+2. Run `supabase/sql/supabase-schema.sql` in the Supabase SQL editor.
 3. Copy `config.example.js` to `config.js`.
 4. Fill `supabaseUrl` and `supabaseAnonKey`.
 5. Deploy the folder to any static host.
 
 ## Video upload
 
-Run `supabase-video-storage.sql` to create a public `signal-videos` bucket for moderated user submissions.
+Run `supabase/sql/supabase-video-storage.sql` to create a public `signal-videos` bucket for moderated user submissions.
 
 After that, set:
 
