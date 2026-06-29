@@ -492,8 +492,12 @@
     event.preventDefault();
     const email = els.emailInput.value.trim();
     const password = els.passwordInput.value;
-    if (!email || !password) {
-      showToast("Enter email and password, or use magic link.", "error");
+    if (!email) {
+      showToast("Enter your email first.", "error");
+      return;
+    }
+    if (!password) {
+      await signInWithMagicLink();
       return;
     }
     setBusy(true);
