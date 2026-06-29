@@ -93,6 +93,21 @@ where status = 'pending'
 -- set issue_type = 'unconfirmed_anomaly'
 -- where title = 'Yaroslavl YANOS refinery-area explosion reports';
 
+-- Approve the occupied Kherson Oblast blackout signal
+-- Energy/infrastructure disruption, not fuel-specific.
+update public.fuel_signals
+set
+  status = 'approved',
+  confidence = 'Verified by moderator: Telegram screenshot/source reviewed',
+  reviewer_note = 'Approved as occupied Kherson Oblast regional blackout signal, 2026-06-29.'
+where status = 'pending'
+  and title = 'Occupied Kherson Oblast full or partial blackout report';
+
+-- After running supabase-issue-type-migration.sql, classify it as:
+-- update public.fuel_signals
+-- set issue_type = 'unconfirmed_anomaly'
+-- where title = 'Occupied Kherson Oblast full or partial blackout report';
+
 -- Reject a signal by id
 -- update public.fuel_signals
 -- set status = 'rejected', reviewer_note = 'Rejected after moderator review.'
