@@ -766,12 +766,17 @@ function timelineHtml(incident) {
   `;
 }
 
+function impactWeightText(value) {
+  const weight = Number(value) || 1;
+  return `${Math.max(1, Math.min(10, Math.round(weight)))}/10`;
+}
+
 function impactHtml(incident) {
   const stationEstimate = Math.max(1, Math.round((incident.lossWeight || 1) * (incident.severity === "critical" ? 8 : incident.severity === "serious" ? 5 : 2)));
   return `
     <div class="impact-grid">
       <div><strong>${stationEstimate}</strong><span>stations affected estimate</span></div>
-      <div><strong>${incident.lossWeight || 1}</strong><span>economic loss weight</span></div>
+      <div><strong>${impactWeightText(incident.lossWeight)}</strong><span>economic loss weight</span></div>
       <div><strong>${incident.issueTypes.map(issueLabel).join(", ")}</strong><span>issue types</span></div>
       <div><strong>${incident.kinds.join(", ")}</strong><span>signal classes</span></div>
     </div>
