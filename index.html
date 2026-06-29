@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Russia Fuel Stress Map</title>
+    <meta
+      name="description"
+      content="Public fuel crisis map: gas stations, queues, rationing, refinery damage, infrastructure stress and economic loss estimates."
+    />
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="side-panel" aria-label="Map control panel">
+        <header class="masthead">
+          <div>
+            <p class="eyebrow" data-i18n="eyebrow">OSINT map</p>
+            <h1 data-i18n="title">Russia fuel stress</h1>
+          </div>
+          <div class="header-tools">
+            <div class="language-toggle" aria-label="Language">
+              <button class="lang-button active" data-lang="en" type="button">EN</button>
+              <button class="lang-button" data-lang="ru" type="button">RU</button>
+            </div>
+            <span id="connectionBadge" class="live-dot demo" title="Local demo mode">Demo</span>
+          </div>
+        </header>
+
+        <section class="score-strip" aria-label="Key metrics">
+          <div>
+            <span id="affectedRegions">0</span>
+            <small data-i18n="metricRegions">regions with reported stress</small>
+          </div>
+          <div>
+            <span id="dryStations">0</span>
+            <small data-i18n="metricStations">gas stations at risk</small>
+          </div>
+          <div>
+            <span id="dailyLoss">0</span>
+            <small data-i18n="metricLoss">RUB bn/day estimate</small>
+          </div>
+        </section>
+
+        <section class="controls" aria-label="Filters">
+          <label class="field">
+            <span data-i18n="searchLabel">Search</span>
+            <input id="searchInput" type="search" placeholder="Region, city, asset, source" autocomplete="off" data-i18n-placeholder="searchPlaceholder" />
+          </label>
+
+          <div class="segmented" role="tablist" aria-label="Data layer">
+            <button class="segment active" data-layer="all" type="button" data-i18n="layerAll">All</button>
+            <button class="segment" data-layer="station" type="button" data-i18n="layerStations">Gas stations</button>
+            <button class="segment" data-layer="infrastructure" type="button" data-i18n="layerRefineries">Refineries</button>
+            <button class="segment" data-layer="region" type="button" data-i18n="layerRegions">Regions</button>
+          </div>
+
+          <div class="filter-row">
+            <label class="check">
+              <input type="checkbox" value="critical" checked />
+              <span data-i18n="critical">Critical</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" value="serious" checked />
+              <span data-i18n="serious">Serious</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" value="watch" checked />
+              <span data-i18n="watch">Watch</span>
+            </label>
+          </div>
+          <label class="field">
+            <span data-i18n="problemFilterLabel">Problem type</span>
+            <select id="issueFilter">
+              <option value="all" data-i18n="issueAll">All problems</option>
+              <option value="no_gasoline" data-i18n="issueNoGasoline">No gasoline</option>
+              <option value="no_diesel" data-i18n="issueNoDiesel">No diesel</option>
+              <option value="long_queues" data-i18n="issueLongQueues">Long queues</option>
+              <option value="purchase_limits" data-i18n="issuePurchaseLimits">Purchase limits</option>
+              <option value="price_spike" data-i18n="issuePriceSpike">Price spike</option>
+              <option value="station_closure" data-i18n="issueStationClosure">Station closures</option>
+              <option value="regional_rationing" data-i18n="issueRegionalRationing">Regional rationing</option>
+              <option value="infrastructure_damage" data-i18n="issueInfrastructureDamage">Infrastructure damage</option>
+              <option value="unconfirmed_anomaly" data-i18n="issueUnconfirmed">Unconfirmed anomaly</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="ingest-panel" aria-label="Add signal">
+          <div class="section-title">
+            <h2 data-i18n="uploadTitle">Signal upload</h2>
+            <span id="syncMode" data-i18n="localOnly">local demo</span>
+          </div>
+          <form id="signalForm">
+            <div class="form-grid">
+              <label class="field">
+                <span data-i18n="coordsLabel">Coordinates</span>
+                <input id="coordsInput" type="text" placeholder="55.75, 37.62" required />
+              </label>
+              <label class="field">
+                <span data-i18n="typeLabel">Type</span>
+                <select id="typeInput">
+                  <option value="station" data-i18n="optionStation">Gas station</option>
+                  <option value="infrastructure" data-i18n="optionInfra">Infrastructure</option>
+                  <option value="region" data-i18n="optionRegion">Regional signal</option>
+                </select>
+              </label>
+            </div>
+            <div class="form-grid">
+              <label class="field">
+                <span data-i18n="issueLabel">Problem</span>
+                <select id="issueTypeInput">
+                  <option value="long_queues" data-i18n="issueLongQueues">Long queues</option>
+                  <option value="no_gasoline" data-i18n="issueNoGasoline">No gasoline</option>
+                  <option value="no_diesel" data-i18n="issueNoDiesel">No diesel</option>
+                  <option value="purchase_limits" data-i18n="issuePurchaseLimits">Purchase limits</option>
+                  <option value="price_spike" data-i18n="issuePriceSpike">Price spike</option>
+                  <option value="station_closure" data-i18n="issueStationClosure">Station closures</option>
+                  <option value="regional_rationing" data-i18n="issueRegionalRationing">Regional rationing</option>
+                  <option value="infrastructure_damage" data-i18n="issueInfrastructureDamage">Infrastructure damage</option>
+                  <option value="unconfirmed_anomaly" data-i18n="issueUnconfirmed">Unconfirmed anomaly</option>
+                </select>
+              </label>
+              <label class="field">
+                <span data-i18n="signalDateLabel">Signal date</span>
+                <input id="signalDateInput" type="date" />
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="noteLabel">Description</span>
+              <textarea id="noteInput" rows="3" placeholder="40+ car queue, no AI-95, diesel by voucher" data-i18n-placeholder="notePlaceholder"></textarea>
+            </label>
+            <div class="form-grid">
+              <label class="field">
+                <span data-i18n="placeLabel">Region/city</span>
+                <input id="placeInput" type="text" placeholder="Irkutsk Oblast, Angarsk" data-i18n-placeholder="placePlaceholder" />
+              </label>
+              <label class="field">
+                <span data-i18n="mediaLabel">Media URL</span>
+                <input id="mediaInput" type="url" placeholder="https://x.com/..." />
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="videoFileLabel">Video file</span>
+              <input id="videoFileInput" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" />
+            </label>
+            <label class="check public-precision">
+              <input id="roundInput" type="checkbox" checked />
+              <span data-i18n="roundPublic">Round public map point</span>
+            </label>
+            <button class="primary-action" type="submit" data-i18n="addSignal">Add to map</button>
+            <p id="submissionStatus" class="submission-status" data-i18n="localModeHint">Public sync is not connected.</p>
+          </form>
+        </section>
+
+        <section class="method-panel">
+          <div class="section-title">
+            <h2 data-i18n="lossTitle">Damage counter</h2>
+            <button id="copyDigest" class="ghost-button" type="button" data-i18n="copyX">Copy X post</button>
+          </div>
+          <p id="lossNarrative">
+            Estimate uses reported shortage regions, refinery disruption weight and gas-station signal severity.
+          </p>
+          <div class="source-list">
+            <a href="https://apnews.com/article/88370faa1a49504438388f2854d7afd3" target="_blank" rel="noreferrer">AP</a>
+            <a href="https://www.theguardian.com/world/2026/jun/29/ukraine-war-briefing-putin-expects-us-negotiators-moscow-fuel-rationing-siberia" target="_blank" rel="noreferrer">Guardian</a>
+            <a href="https://www.rferl.org/a/fuel-crisis-hits-russian-occupied-crimea/33773280.html" target="_blank" rel="noreferrer">RFE/RL</a>
+          </div>
+        </section>
+      </aside>
+
+      <main class="map-stage">
+        <div class="topbar">
+          <div class="status-line">
+            <strong id="focusTitle">Russia overview</strong>
+            <span id="focusSubtitle">Gas stations, refineries, regional rationing and uploaded videos</span>
+          </div>
+          <div class="toolbar">
+            <button id="fitRussia" class="tool-button" type="button" title="Fit Russia">⌖</button>
+            <button id="clearLocal" class="tool-button danger" type="button" title="Clear local signals">×</button>
+          </div>
+        </div>
+        <div id="map" aria-label="Fuel crisis map"></div>
+        <div class="legend" aria-label="Legend">
+          <span><i class="legend-dot critical"></i> <span data-i18n="critical">critical</span></span>
+          <span><i class="legend-dot serious"></i> <span data-i18n="serious">serious</span></span>
+          <span><i class="legend-dot watch"></i> <span data-i18n="watch">watch</span></span>
+          <span><i class="legend-square"></i> <span data-i18n="legendInfra">refinery / infrastructure</span></span>
+        </div>
+        <section class="detail-drawer" id="detailDrawer" aria-live="polite">
+          <div>
+            <p class="eyebrow" data-i18n="selectedEyebrow">Selected item</p>
+            <h2 id="detailTitle">Click a point or region</h2>
+          </div>
+          <p id="detailText">The map shows aggregated public signals. Exact sensitive infrastructure coordinates are not exposed.</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
