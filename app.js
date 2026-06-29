@@ -490,12 +490,6 @@ function applyTranslations() {
   else {
     document.getElementById("focusTitle").textContent = tr("overviewTitle");
     document.getElementById("focusSubtitle").textContent = tr("overviewSubtitle");
-    document.getElementById("detailTitle").textContent = tr("emptyDetailTitle");
-    document.getElementById("detailText").textContent = tr("emptyDetailText");
-    document.getElementById("incidentMeta").textContent = tr("overviewSubtitle");
-    document.getElementById("incidentStats").hidden = true;
-    document.getElementById("incidentTabs").hidden = true;
-    document.getElementById("incidentPanel").innerHTML = "";
   }
 }
 
@@ -790,6 +784,8 @@ function clearSelection() {
   state.selected = null;
   state.selectedTab = "overview";
   document.querySelectorAll(".incident-tab").forEach((item) => item.classList.toggle("active", item.dataset.tab === "overview"));
+  document.getElementById("detailDrawer").hidden = true;
+  document.getElementById("incidentPanel").innerHTML = "";
   applyTranslations();
 }
 
@@ -838,6 +834,7 @@ function render() {
 
 function selectItem(item) {
   state.selected = item;
+  document.getElementById("detailDrawer").hidden = false;
   document.getElementById("detailTitle").textContent = textOf(item.title);
   const isIncident = Array.isArray(item.signals);
   document.getElementById("incidentTabs").hidden = !isIncident;

@@ -10,7 +10,7 @@
     />
     <link rel="preconnect" href="https://unpkg.com" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="./styles.css?v=drawer-close" />
+    <link rel="stylesheet" href="./styles.css?v=drawer-hide" />
   </head>
   <body>
     <div class="app-shell">
@@ -188,8 +188,10 @@
           <span><i class="legend-dot watch"></i> <span data-i18n="watch">watch</span></span>
           <span><i class="legend-square"></i> <span data-i18n="legendInfra">refinery / infrastructure</span></span>
         </div>
-        <section class="detail-drawer" id="detailDrawer" aria-live="polite">
-          <button id="closeDetail" class="detail-close" type="button" title="Close selected item" aria-label="Close selected item">×</button>
+        <section class="detail-drawer" id="detailDrawer" aria-live="polite" hidden>
+          <div class="detail-drawer-tools">
+            <button id="closeDetail" class="detail-close" type="button" title="Close selected item" aria-label="Close selected item">×</button>
+          </div>
           <div class="incident-head">
             <p class="eyebrow" data-i18n="selectedEyebrow">Selected item</p>
             <h2 id="detailTitle">Click a point or region</h2>
@@ -209,7 +211,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="./config.js?v=drawer-close"></script>
-    <script src="./app.js?v=drawer-close"></script>
+    <script src="./config.js?v=drawer-hide"></script>
+    <script src="./app.js?v=drawer-hide"></script>
   </body>
 </html>

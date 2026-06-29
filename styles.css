@@ -506,6 +506,7 @@ button:focus-visible {
   z-index: 1000;
   display: grid;
   grid-template-columns: minmax(220px, 0.55fr) 1fr;
+  grid-template-rows: auto auto auto auto auto;
   gap: 14px 18px;
   max-width: 900px;
   max-height: min(56vh, 520px);
@@ -514,10 +515,18 @@ button:focus-visible {
   border-radius: 8px;
 }
 
+.detail-drawer[hidden] {
+  display: none;
+}
+
+.detail-drawer-tools {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  min-height: 32px;
+}
+
 .detail-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   display: grid;
   place-items: center;
   width: 32px;
@@ -541,7 +550,6 @@ button:focus-visible {
 
 .incident-head {
   min-width: 0;
-  padding-right: 34px;
 }
 
 .detail-drawer h2 {
