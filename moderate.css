@@ -214,6 +214,23 @@ p {
   padding: 24px;
 }
 
+.admin-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.admin-panel p {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
 .empty-detail {
   max-width: 560px;
   padding-top: 10vh;
@@ -391,7 +408,8 @@ button:focus-visible {
   .session-actions,
   .auth-actions,
   .decision-actions,
-  .form-footer {
+  .form-footer,
+  .admin-panel {
     flex-wrap: wrap;
   }
 }

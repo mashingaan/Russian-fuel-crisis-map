@@ -21,6 +21,7 @@
     passwordButton: document.getElementById("passwordButton"),
     signOutButton: document.getElementById("signOutButton"),
     refreshButton: document.getElementById("refreshButton"),
+    repairLaunchButton: document.getElementById("repairLaunchButton"),
     sessionLabel: document.getElementById("sessionLabel"),
     statusFilter: document.getElementById("statusFilter"),
     queueMeta: document.getElementById("queueMeta"),
@@ -92,6 +93,7 @@
     els.passwordButton.disabled = state.busy;
     els.signOutButton.disabled = state.busy || !signedIn;
     els.refreshButton.disabled = state.busy || !signedIn;
+    els.repairLaunchButton.disabled = state.busy || !signedIn;
     els.rejectButton.disabled = state.busy || !hasSelection;
     els.approveButton.disabled = state.busy || !hasSelection;
     els.saveButton.disabled = state.busy || !hasSelection;
@@ -262,6 +264,161 @@
     return patch;
   }
 
+  const launchRepairRows = [
+    {
+      id: "10bee310-1b41-46fa-9f0d-e8dcadc590ae",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-28",
+        title: "Slavyansk-on-Kuban refinery fire, multiple fires reported",
+        region: "Krasnodar Krai",
+        place: "Slavyansk-on-Kuban, rounded",
+        lat: 45.25,
+        lng: 38.12,
+        type: "infrastructure",
+        severity: "critical",
+        note: "X video report: burning refinery in Slavyansk-on-Kuban, Krasnodar region, with several independent fires reported, including silo farm area. Public point is rounded.",
+        fuel: "Refinery",
+        media_url: "https://x.com/Tendar/status/2071293970357895340",
+        confidence: "Verified by moderator: public X video source",
+        reviewer_note: "Repaired in moderator console after accidental Sevastopol field overwrite.",
+      },
+    },
+    {
+      id: "5b88a21f-46a0-480e-aa38-6a3827eb7dae",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-29",
+        title: "Taganrog fuel access anomaly at gas station",
+        region: "Rostov Oblast",
+        place: "Taganrog, rounded",
+        lat: 47.2,
+        lng: 38.9,
+        type: "station",
+        severity: "watch",
+        note: "X report: fuel was reportedly available but not for everyone; regular drivers were not served while selected vehicles and jerrycans were reportedly refueled. Treat as an unconfirmed fuel-access anomaly.",
+        fuel: "Gasoline, availability disputed",
+        media_url: "https://x.com/LXSummer1/status/2071338652337307974",
+        confidence: "Verified by moderator: public X video/source; anomaly details still source-dependent.",
+        reviewer_note: "Repaired in moderator console after accidental Sevastopol field overwrite.",
+      },
+    },
+    {
+      id: "59af680f-c11e-4589-b5f2-e2f57b6a5cdd",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-28",
+        title: "Novorossiysk gasoline queue",
+        region: "Krasnodar Krai",
+        place: "Novorossiysk, rounded",
+        lat: 44.7,
+        lng: 37.8,
+        type: "station",
+        severity: "serious",
+        note: "X video report: queue for gasoline in Novorossiysk, Russia. Public point is rounded.",
+        fuel: "Gasoline",
+        media_url: "https://x.com/Maks_NAFO_FELLA/status/2071279694243143812",
+        confidence: "Verified by moderator: public X video source",
+        reviewer_note: "Repaired in moderator console after accidental Sevastopol field overwrite.",
+      },
+    },
+    {
+      id: "5b542034-9a2f-4c94-ae1c-af8174b4555c",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-28",
+        title: "Surgut gasoline availability problem",
+        region: "Khanty-Mansi Autonomous Okrug",
+        place: "Surgut, rounded",
+        lat: 61.3,
+        lng: 73.4,
+        type: "station",
+        severity: "watch",
+        note: "X video report: Surgut, Khanty-Mansi Autonomous Okrug. Gasoline is reportedly already a problem even there. Treat as gasoline availability anomaly until exact fuel type and station status are verified.",
+        fuel: "Gasoline, availability problem reported",
+        media_url: "https://x.com/Maks_NAFO_FELLA/status/2071088282708889786",
+        confidence: "Verified by moderator: public X video source",
+        reviewer_note: "Repaired in moderator console; approved as the only public Surgut signal for this source.",
+      },
+    },
+    {
+      id: "30f3fdd4-5809-41ba-be84-62f7ce0f2545",
+      patch: {
+        status: "rejected",
+        observed_at: "2026-06-28",
+        title: "Rejected duplicate: Oryol misclassification of Surgut source",
+        region: "Rejected duplicate",
+        place: "Rejected duplicate",
+        lat: 61.3,
+        lng: 73.4,
+        type: "station",
+        severity: "watch",
+        note: "Rejected duplicate. User did not submit an Oryol signal for this source; the source signal is Surgut only.",
+        fuel: "Gasoline, duplicate rejected",
+        media_url: "https://x.com/Maks_NAFO_FELLA/status/2071088282708889786",
+        confidence: "Rejected by moderator",
+        reviewer_note: "Rejected in moderator console: misclassified Oryol / duplicate Surgut row.",
+      },
+    },
+    {
+      id: "d14e81be-a610-4d74-8cb0-8728a17c6e5f",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-28",
+        title: "Yaroslavl YANOS refinery-area explosion reports",
+        region: "Yaroslavl Oblast",
+        place: "Yaroslavl, YANOS refinery area, rounded",
+        lat: 57.6,
+        lng: 39.9,
+        type: "infrastructure",
+        severity: "watch",
+        note: "Telegram screenshot/source: reports explosion or incident around the YANOS refinery area in Yaroslavl on 2026-06-28. Damage remains unverified.",
+        fuel: "Refinery-area report, damage unverified",
+        media_url: null,
+        confidence: "Verified by moderator: Telegram screenshot/source reviewed; damage unverified.",
+        reviewer_note: "Repaired in moderator console after accidental Sevastopol field overwrite.",
+      },
+    },
+    {
+      id: "7e7715bf-fb9c-4cb4-a731-00727c8807e9",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-29",
+        title: "Occupied Kherson Oblast full or partial blackout report",
+        region: "Occupied Kherson Oblast",
+        place: "Kherson Oblast, rounded",
+        lat: 46.6,
+        lng: 33,
+        type: "region",
+        severity: "serious",
+        note: "Telegram screenshot/source: Saldo claimed all or part of Kherson Oblast was without power; energy and emergency services were reportedly working. Regional infrastructure disruption, not fuel-specific.",
+        fuel: "Power infrastructure / electricity",
+        media_url: null,
+        confidence: "Verified by moderator: Telegram screenshot/source reviewed.",
+        reviewer_note: "Repaired in moderator console after accidental Sevastopol field overwrite.",
+      },
+    },
+    {
+      id: "eb593506-4b17-45bd-8036-78bf9d7861b6",
+      patch: {
+        status: "approved",
+        observed_at: "2026-06-29",
+        title: "Sevastopol parcel delivery disruption report",
+        region: "Sevastopol / Crimea",
+        place: "Destination: Sevastopol; source location unknown",
+        lat: 44.6,
+        lng: 33.53,
+        type: "region",
+        severity: "watch",
+        note: "User-submitted report: parcels to Sevastopol are not arriving. Approved only as an affected-destination logistics disruption; source/origin location remains unknown.",
+        fuel: "Not fuel-specific",
+        media_url: null,
+        confidence: "Verified by moderator: user-submitted local video/context; source location unknown.",
+        reviewer_note: "Approved as affected-destination logistics anomaly; not an exact incident-location point.",
+      },
+    },
+  ];
+
   async function updateSelected(overrides, successMessage) {
     const row = selectedRow();
     if (!row) return;
@@ -280,6 +437,29 @@
       renderQueue();
       renderDetail();
       showToast(successMessage, "success");
+    } catch (error) {
+      showToast(formatError(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function repairLaunchRows() {
+    if (!state.session) {
+      showToast("Sign in as a moderator first.", "error");
+      return;
+    }
+
+    setBusy(true);
+    try {
+      let repaired = 0;
+      for (const item of launchRepairRows) {
+        const { error } = await client.from(tableName).update(item.patch).eq("id", item.id);
+        if (error) throw error;
+        repaired += 1;
+      }
+      showToast(`Repaired ${repaired} launch row${repaired === 1 ? "" : "s"}.`, "success");
+      await loadRows();
     } catch (error) {
       showToast(formatError(error), "error");
     } finally {
@@ -348,6 +528,7 @@
     els.authForm.addEventListener("submit", signInWithPassword);
     els.signOutButton.addEventListener("click", signOut);
     els.refreshButton.addEventListener("click", loadRows);
+    els.repairLaunchButton.addEventListener("click", repairLaunchRows);
     els.statusFilter.addEventListener("change", async () => {
       state.statusFilter = els.statusFilter.value;
       await loadRows();

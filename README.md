@@ -82,4 +82,6 @@ Preferred workflow:
 5. Open `/moderate.html`.
 6. Review pending signals, edit wording/location if needed, then approve or reject with buttons.
 
+The moderator console also has `Repair launch rows` for the known launch-data corruption fix. Use it instead of running `repair-corrupted-public-signals.sql` manually after moderator auth is configured.
+
 Use `moderation-queries.sql` only for bulk fixes or emergency SQL-level review.
