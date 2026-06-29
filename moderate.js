@@ -475,9 +475,10 @@
     }
     setBusy(true);
     try {
+      const redirectTo = config.moderatorRedirectUrl || window.location.href.split("#")[0];
       const { error } = await client.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: window.location.href },
+        options: { emailRedirectTo: redirectTo },
       });
       if (error) throw error;
       showToast("Magic link sent. Open it in this browser.", "success");

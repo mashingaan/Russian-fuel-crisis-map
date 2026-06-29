@@ -79,8 +79,11 @@ Preferred workflow:
 2. Open `supabase-moderation-auth.sql`.
 3. Replace `YOUR_EMAIL@example.com` with that moderator email.
 4. Run the SQL once.
-5. Open `/moderate.html`.
-6. Review pending signals, edit wording/location if needed, then approve or reject with buttons.
+5. In Supabase Authentication URL Configuration, set:
+   - Site URL: `https://mashingaan.github.io/Russian-fuel-crisis-map/`
+   - Redirect URL: `https://mashingaan.github.io/Russian-fuel-crisis-map/moderate.html`
+6. Open `/moderate.html`.
+7. Review pending signals, edit wording/location if needed, then approve or reject with buttons.
 
 The moderator console also has `Repair launch rows` for the known launch-data corruption fix. Use it instead of running `repair-corrupted-public-signals.sql` manually after moderator auth is configured.
 
