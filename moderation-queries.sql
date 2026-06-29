@@ -56,26 +56,11 @@ where status = 'pending'
   and media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
   and title = 'Surgut gasoline availability problem';
 
--- Approve the Oryol Oblast gas-station anomaly signal
-update public.fuel_signals
-set
-  status = 'approved',
-  confidence = 'Verified by moderator: public X video source',
-  reviewer_note = 'Approved as a gas-station anomaly in Oryol Oblast, 2026-06-28.'
-where status = 'pending'
-  and media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
-  and title = 'Oryol Oblast gas-station situation worsening';
-
 -- After running supabase-issue-type-migration.sql, classify them as:
 -- update public.fuel_signals
 -- set issue_type = 'no_gasoline'
 -- where media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
 --   and title = 'Surgut gasoline availability problem';
---
--- update public.fuel_signals
--- set issue_type = 'unconfirmed_anomaly'
--- where media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
---   and title = 'Oryol Oblast gas-station situation worsening';
 
 -- Reject a signal by id
 -- update public.fuel_signals

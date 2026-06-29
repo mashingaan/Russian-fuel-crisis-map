@@ -14,6 +14,14 @@ where coalesce(title, '') not ilike 'TEST%'
     'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786'
   );
 
+-- The 2071088282708889786 source should only approve the Surgut row.
+update public.fuel_signals
+set
+  status = 'rejected',
+  reviewer_note = 'Rejected: the provided video/source is for Surgut, not Oryol Oblast.'
+where title = 'Oryol Oblast gas-station situation worsening'
+  and media_url = 'https://x.com/Maks_NAFO_FELLA/status/2071088282708889786';
+
 select status, count(*) as count
 from public.fuel_signals
 group by status
