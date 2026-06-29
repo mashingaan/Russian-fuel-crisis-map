@@ -505,22 +505,221 @@ button:focus-visible {
   bottom: 18px;
   z-index: 1000;
   display: grid;
-  grid-template-columns: minmax(220px, 0.45fr) 1fr;
-  gap: 18px;
-  max-width: 780px;
+  grid-template-columns: minmax(220px, 0.55fr) 1fr;
+  gap: 14px 18px;
+  max-width: 900px;
+  max-height: min(56vh, 520px);
+  overflow: auto;
   padding: 16px;
   border-radius: 8px;
+}
+
+.incident-head {
+  min-width: 0;
 }
 
 .detail-drawer h2 {
   font-size: 18px;
 }
 
-.detail-drawer p:last-child {
-  margin-bottom: 0;
+.incident-meta,
+.detail-drawer p {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.45;
+}
+
+.incident-meta {
+  margin: 6px 0 0;
+}
+
+.incident-stats {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.incident-stats span {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.incident-tabs {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
+.incident-tab {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.incident-tab.active,
+.incident-tab:hover {
+  border-color: var(--line);
+  background: oklch(24% 0.018 235);
+  color: var(--text);
+}
+
+.incident-panel {
+  grid-column: 1 / -1;
+}
+
+.overview-block p {
+  max-width: 72ch;
+  margin: 0 0 8px;
+}
+
+.timeline-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-list li {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.timeline-list time {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.timeline-list strong,
+.evidence-card strong {
+  font-size: 13px;
+}
+
+.timeline-list p,
+.evidence-card p {
+  margin: 4px 0 0;
+}
+
+.evidence-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.evidence-card {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: oklch(17% 0.014 235);
+}
+
+.evidence-meta {
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.impact-grid div {
+  display: grid;
+  gap: 4px;
+  min-height: 74px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: oklch(17% 0.014 235);
+}
+
+.impact-grid strong {
+  color: var(--accent);
+  font-size: 20px;
+}
+
+.impact-grid span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.incident-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.incident-pin {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: 1fr;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid oklch(94% 0.006 235);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px oklch(5% 0.01 235 / 0.55);
+  color: oklch(10% 0.01 235);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.incident-pin strong {
+  font-size: 13px;
+}
+
+.incident-pin span {
+  margin-top: -2px;
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+.incident-pin.critical {
+  background: var(--danger);
+}
+
+.incident-pin.serious {
+  background: var(--warn);
+}
+
+.incident-pin.watch {
+  background: var(--watch);
+}
+
+.incident-label {
+  max-width: 112px;
+  padding: 4px 7px;
+  overflow: hidden;
+  border: 1px solid oklch(38% 0.02 235);
+  border-radius: 999px;
+  background: oklch(14% 0.012 235 / 0.88);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px oklch(5% 0.01 235 / 0.35);
 }
 
 .pin {
@@ -585,12 +784,19 @@ button:focus-visible {
   line-height: 1.45;
 }
 
-.popup-link {
+.popup-link,
+.source-link {
   display: inline-flex;
   margin-top: 8px;
   color: var(--accent);
   font-size: 12px;
+  font-weight: 800;
   text-decoration: none;
+}
+
+.popup-link:hover,
+.source-link:hover {
+  text-decoration: underline;
 }
 
 .signal-video {

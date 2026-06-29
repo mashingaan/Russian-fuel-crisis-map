@@ -426,6 +426,7 @@ const state = {
   localEvents: JSON.parse(localStorage.getItem("fuelCrisisSignals") || "[]"),
   publicEvents: [],
   selected: null,
+  selectedTab: "overview",
 };
 
 const map = L.map("map", { zoomControl: false, preferCanvas: true }).setView([57, 74], 4);
@@ -491,6 +492,10 @@ function applyTranslations() {
     document.getElementById("focusSubtitle").textContent = tr("overviewSubtitle");
     document.getElementById("detailTitle").textContent = tr("emptyDetailTitle");
     document.getElementById("detailText").textContent = tr("emptyDetailText");
+    document.getElementById("incidentMeta").textContent = tr("overviewSubtitle");
+    document.getElementById("incidentStats").hidden = true;
+    document.getElementById("incidentTabs").hidden = true;
+    document.getElementById("incidentPanel").innerHTML = "";
   }
 }
 
@@ -511,10 +516,127 @@ function pinIcon(item) {
   });
 }
 
+function incidentIcon(incident) {
+  const count = incident.signals.length;
+  const iconLabels = incident.kinds.map((kind) => kind.slice(0, 1).toUpperCase()).join("");
+  const place = textOf(incident.place) || textOf(incident.region) || textOf(incident.title);
+  const label = `${place}, ${count} signal${count === 1 ? "" : "s"}`;
+  return L.divIcon({
+    className: "",
+    html: `
+      <span class="incident-marker" aria-label="${escapeHtml(label)}">
+        <span class="incident-pin ${incident.severity}">
+          <strong>${count}</strong>
+          <span>${escapeHtml(iconLabels || "F")}</span>
+        </span>
+        <span class="incident-label">${escapeHtml(label)}</span>
+      </span>
+    `,
+    iconSize: [150, 50],
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -18],
+  });
+}
+
 function severityColor(severity) {
   if (severity === "critical") return "#e04f3f";
   if (severity === "serious") return "#d7a235";
   return "#4d94c9";
+}
+
+function severityRank(severity) {
+  if (severity === "critical") return 3;
+  if (severity === "serious") return 2;
+  return 1;
+}
+
+function incidentKeyFor(item) {
+  const place = searchableText(item.place || item.region || item.title)
+    .toLowerCase()
+    .replace(/[^a-z0-9а-яё]+/gi, " ")
+    .trim()
+    .split(" ")
+    .slice(0, 4)
+    .join("-");
+  const lat = Number(item.lat || 0).toFixed(1);
+  const lng = Number(item.lng || 0).toFixed(1);
+  return `${place || item.id || "signal"}:${lat}:${lng}`;
+}
+
+function signalKinds(item) {
+  const text = `${searchableText(item.title)} ${searchableText(item.status)} ${searchableText(item.fuel)} ${searchableText(item.note)}`.toLowerCase();
+  const kinds = new Set();
+  if (item.type === "infrastructure" || text.includes("refinery") || text.includes("нпз")) kinds.add("infrastructure");
+  if (text.includes("power") || text.includes("electric") || text.includes("blackout") || text.includes("substation")) kinds.add("power");
+  if (text.includes("parcel") || text.includes("logistics") || text.includes("cdek") || text.includes("посыл")) kinds.add("logistics");
+  if (item.type === "station" || text.includes("gasoline") || text.includes("diesel") || text.includes("fuel") || text.includes("бензин")) kinds.add("fuel");
+  if (!kinds.size) kinds.add(item.type === "region" ? "fuel" : item.type);
+  return [...kinds];
+}
+
+function buildIncidents(events) {
+  const groups = new Map();
+  events.forEach((item) => {
+    const key = incidentKeyFor(item);
+    if (!groups.has(key)) {
+      groups.set(key, {
+        id: key,
+        title: item.title,
+        region: item.region,
+        place: item.place,
+        lat: item.lat,
+        lng: item.lng,
+        type: item.type,
+        severity: item.severity || "watch",
+        status: item.status,
+        fuel: item.fuel,
+        confidence: item.confidence,
+        source: item.source,
+        sourceUrl: item.sourceUrl,
+        mediaUrl: item.mediaUrl,
+        lossWeight: 0,
+        signals: [],
+        issueTypes: new Set(),
+        sources: new Set(),
+        kinds: new Set(),
+        lastObservedAt: eventDateValue(item),
+      });
+    }
+    const incident = groups.get(key);
+    incident.signals.push(item);
+    incident.issueTypes.add(issueTypeOf(item));
+    signalKinds(item).forEach((kind) => incident.kinds.add(kind));
+    const source = item.mediaUrl || item.sourceUrl || item.source || "unknown";
+    if (source) incident.sources.add(source);
+    incident.lossWeight += item.lossWeight || 1;
+    const itemDate = eventDateValue(item);
+    if (severityRank(item.severity) > severityRank(incident.severity) || itemDate > incident.lastObservedAt) {
+      incident.title = item.title;
+      incident.region = item.region;
+      incident.place = item.place;
+      incident.lat = item.lat;
+      incident.lng = item.lng;
+      incident.type = item.type;
+      incident.status = item.status;
+      incident.fuel = item.fuel;
+      incident.confidence = item.confidence;
+      incident.source = item.source;
+      incident.sourceUrl = item.sourceUrl;
+      incident.mediaUrl = item.mediaUrl;
+      incident.lastObservedAt = itemDate;
+    }
+    if (severityRank(item.severity) > severityRank(incident.severity)) {
+      incident.severity = item.severity;
+    }
+  });
+
+  return [...groups.values()].map((incident) => ({
+    ...incident,
+    issueTypes: [...incident.issueTypes],
+    sources: [...incident.sources],
+    kinds: [...incident.kinds],
+    signals: incident.signals.sort((a, b) => eventDateValue(b).localeCompare(eventDateValue(a))),
+  }));
 }
 
 function matchesFilters(item) {
@@ -523,6 +645,17 @@ function matchesFilters(item) {
   const layerOk = state.activeLayer === "all" || item.type === state.activeLayer;
   const issueOk = state.activeIssue === "all" || itemIssue === state.activeIssue;
   const severityOk = state.severities.has(item.severity);
+  const queryOk = !state.query || haystack.includes(state.query);
+  return layerOk && issueOk && severityOk && queryOk;
+}
+
+function matchesIncident(incident) {
+  const itemIssue = incident.issueTypes[0] || issueTypeOf(incident);
+  const signalsText = incident.signals.map((signal) => `${searchableText(signal.title)} ${searchableText(signal.place)} ${searchableText(signal.status)} ${searchableText(signal.fuel)}`).join(" ");
+  const haystack = `${searchableText(incident.title)} ${searchableText(incident.region)} ${searchableText(incident.place)} ${searchableText(incident.status)} ${searchableText(incident.fuel)} ${incident.issueTypes.map(issueLabel).join(" ")} ${signalsText}`.toLowerCase();
+  const layerOk = state.activeLayer === "all" || incident.signals.some((signal) => signal.type === state.activeLayer);
+  const issueOk = state.activeIssue === "all" || incident.issueTypes.includes(state.activeIssue) || itemIssue === state.activeIssue;
+  const severityOk = state.severities.has(incident.severity);
   const queryOk = !state.query || haystack.includes(state.query);
   return layerOk && issueOk && severityOk && queryOk;
 }
@@ -559,6 +692,100 @@ function eventDateValue(item) {
   return item.observedAt || item.createdAt || "1970-01-01";
 }
 
+function prettyDate(value) {
+  if (!value) return "No date";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "short" });
+}
+
+function incidentSummary(incident) {
+  const issueText = incident.issueTypes.map(issueLabel).join(", ");
+  const latest = incident.signals[0];
+  return `${escapeHtml(textOf(latest?.status || incident.status) || tr("noDescription"))} ${issueText ? `${tr("issueTypeLabel")}: ${escapeHtml(issueText)}.` : ""}`;
+}
+
+function incidentMetaText(incident) {
+  const sourceCount = incident.sources.length;
+  return `${prettyDate(incident.lastObservedAt)} · ${incident.signals.length} signal${incident.signals.length === 1 ? "" : "s"} · ${sourceCount} source${sourceCount === 1 ? "" : "s"} · ${escapeHtml(textOf(incident.confidence) || tr("localConfidence"))}`;
+}
+
+function sourceUrlOf(signal) {
+  return signal.sourceUrl || signal.mediaUrl || "";
+}
+
+function signalCard(signal) {
+  const link = sourceUrlOf(signal);
+  const sourceLink = link ? `<a class="source-link" href="${escapeHtml(link)}" target="_blank" rel="noreferrer">${tr("openSource")}</a>` : "";
+  return `
+    <article class="evidence-card">
+      <div>
+        <strong>${escapeHtml(textOf(signal.title))}</strong>
+        <p>${prettyDate(eventDateValue(signal))} · ${escapeHtml(textOf(signal.place) || textOf(signal.region) || tr("noPlace"))}</p>
+      </div>
+      <p>${escapeHtml(textOf(signal.status) || tr("noDescription"))}</p>
+      <p class="evidence-meta">${tr("issueTypeLabel")}: ${escapeHtml(issueLabel(issueTypeOf(signal)))} · ${tr("verification")}: ${escapeHtml(textOf(signal.confidence) || tr("localConfidence"))}</p>
+      ${mediaPreviewHtml(link)}
+      ${sourceLink}
+    </article>
+  `;
+}
+
+function timelineHtml(incident) {
+  return `
+    <ol class="timeline-list">
+      ${incident.signals
+        .map(
+          (signal) => `
+            <li>
+              <time>${prettyDate(eventDateValue(signal))}</time>
+              <div>
+                <strong>${escapeHtml(textOf(signal.title))}</strong>
+                <p>${escapeHtml(textOf(signal.status) || tr("noDescription"))}</p>
+              </div>
+            </li>
+          `,
+        )
+        .join("")}
+    </ol>
+  `;
+}
+
+function impactHtml(incident) {
+  const stationEstimate = Math.max(1, Math.round((incident.lossWeight || 1) * (incident.severity === "critical" ? 8 : incident.severity === "serious" ? 5 : 2)));
+  return `
+    <div class="impact-grid">
+      <div><strong>${stationEstimate}</strong><span>stations affected estimate</span></div>
+      <div><strong>${incident.lossWeight || 1}</strong><span>economic loss weight</span></div>
+      <div><strong>${incident.issueTypes.map(issueLabel).join(", ")}</strong><span>issue types</span></div>
+      <div><strong>${incident.kinds.join(", ")}</strong><span>signal classes</span></div>
+    </div>
+  `;
+}
+
+function renderIncidentPanel() {
+  const incident = state.selected;
+  const panel = document.getElementById("incidentPanel");
+  if (!incident?.signals) {
+    panel.innerHTML = "";
+    return;
+  }
+  if (state.selectedTab === "timeline") {
+    panel.innerHTML = timelineHtml(incident);
+  } else if (state.selectedTab === "evidence") {
+    panel.innerHTML = `<div class="evidence-list">${incident.signals.map(signalCard).join("")}</div>`;
+  } else if (state.selectedTab === "impact") {
+    panel.innerHTML = impactHtml(incident);
+  } else {
+    panel.innerHTML = `
+      <div class="overview-block">
+        <p>${incidentSummary(incident)}</p>
+        <p>${escapeHtml(textOf(incident.place) || tr("noPlace"))}. ${incident.signals.length} signal${incident.signals.length === 1 ? "" : "s"} are grouped into this incident. Map point is rounded when needed.</p>
+      </div>
+    `;
+  }
+}
+
 function render() {
   markerLayer.clearLayers();
   regionLayer.clearLayers();
@@ -566,7 +793,7 @@ function render() {
   const events = [...seedEvents, ...state.publicEvents, ...state.localEvents].sort((a, b) =>
     eventDateValue(b).localeCompare(eventDateValue(a)),
   );
-  const visibleEvents = events.filter(matchesFilters);
+  const visibleIncidents = buildIncidents(events).filter(matchesIncident);
 
   regionStress
     .filter((region) => (state.activeLayer === "all" || state.activeLayer === "region") && state.severities.has(region.severity))
@@ -596,10 +823,9 @@ function render() {
       );
     });
 
-  visibleEvents.forEach((item) => {
-    const marker = L.marker([item.lat, item.lng], { icon: pinIcon(item), title: textOf(item.title) }).addTo(markerLayer);
-    marker.bindPopup(popupHtml(item));
-    marker.on("click", () => selectItem(item));
+  visibleIncidents.forEach((incident) => {
+    const marker = L.marker([incident.lat, incident.lng], { icon: incidentIcon(incident), title: textOf(incident.title) }).addTo(markerLayer);
+    marker.on("click", () => selectItem(incident));
   });
 
   updateMetrics(events);
@@ -608,14 +834,30 @@ function render() {
 function selectItem(item) {
   state.selected = item;
   document.getElementById("detailTitle").textContent = textOf(item.title);
-  const mediaUrl = item.sourceUrl || item.mediaUrl || "";
-  document.getElementById("detailText").innerHTML = `${escapeHtml(textOf(item.place) || tr("noPlace"))}. ${
-    item.observedAt ? `${escapeHtml(item.observedAt)}. ` : ""
-  }${escapeHtml(textOf(item.status) || "")} ${tr("issueTypeLabel")}: ${escapeHtml(issueLabel(issueTypeOf(item)))}. ${tr("verification")}: ${
-    escapeHtml(textOf(item.confidence) || tr("noFuel"))
-  }.${mediaPreviewHtml(mediaUrl)}`;
+  const isIncident = Array.isArray(item.signals);
+  document.getElementById("incidentTabs").hidden = !isIncident;
+  document.getElementById("incidentStats").hidden = !isIncident;
+  document.getElementById("incidentMeta").textContent = isIncident ? incidentMetaText(item) : "Aggregated public signals";
+  if (isIncident) {
+    document.getElementById("detailText").innerHTML = incidentSummary(item);
+    document.getElementById("incidentStats").innerHTML = `
+      <span>${escapeHtml(item.severity)}</span>
+      <span>${item.signals.length} signal${item.signals.length === 1 ? "" : "s"}</span>
+      <span>${item.sources.length} source${item.sources.length === 1 ? "" : "s"}</span>
+      <span>${escapeHtml(item.kinds.join(" / "))}</span>
+    `;
+    renderIncidentPanel();
+  } else {
+    const mediaUrl = item.sourceUrl || item.mediaUrl || "";
+    document.getElementById("detailText").innerHTML = `${escapeHtml(textOf(item.place) || tr("noPlace"))}. ${
+      item.observedAt ? `${escapeHtml(item.observedAt)}. ` : ""
+    }${escapeHtml(textOf(item.status) || "")} ${tr("issueTypeLabel")}: ${escapeHtml(issueLabel(issueTypeOf(item)))}. ${tr("verification")}: ${
+      escapeHtml(textOf(item.confidence) || tr("noFuel"))
+    }.${mediaPreviewHtml(mediaUrl)}`;
+    document.getElementById("incidentPanel").innerHTML = "";
+  }
   document.getElementById("focusTitle").textContent = textOf(item.region) || textOf(item.title);
-  document.getElementById("focusSubtitle").textContent = textOf(item.status) || tr("signalSelected");
+  document.getElementById("focusSubtitle").textContent = isIncident ? `${textOf(item.place) || textOf(item.region)} · ${item.signals.length} signal${item.signals.length === 1 ? "" : "s"}` : textOf(item.status) || tr("signalSelected");
 }
 
 function updateMetrics(events) {
@@ -813,6 +1055,14 @@ document.querySelectorAll(".filter-row input").forEach((input) => {
 document.getElementById("issueFilter").addEventListener("change", (event) => {
   state.activeIssue = event.target.value;
   render();
+});
+
+document.querySelectorAll(".incident-tab").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.selectedTab = button.dataset.tab;
+    document.querySelectorAll(".incident-tab").forEach((item) => item.classList.toggle("active", item === button));
+    renderIncidentPanel();
+  });
 });
 
 document.getElementById("typeInput").addEventListener("change", (event) => {

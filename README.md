@@ -27,6 +27,16 @@ The frontend uses the Supabase anon public key. Do not put a service role key in
 - `infrastructure_damage`
 - `unconfirmed_anomaly`
 
+## Incident Model
+
+The public map should show incident aggregates, not every signal as a separate map point.
+
+- map marker: current severity, signal count, signal classes and place label
+- drawer: overview, timeline, evidence and impact tabs
+- evidence: videos, X/Telegram/news links and local reports attached to the same incident
+
+The current frontend groups existing `fuel_signals` client-side. `supabase-incidents-schema.sql` contains the normalized future schema for `incidents` and `incident_signals`.
+
 ## Local Run
 
 ```bash

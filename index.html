@@ -10,7 +10,7 @@
     />
     <link rel="preconnect" href="https://unpkg.com" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="./styles.css?v=f63def1" />
+    <link rel="stylesheet" href="./styles.css?v=incident-drawer" />
   </head>
   <body>
     <div class="app-shell">
@@ -189,17 +189,26 @@
           <span><i class="legend-square"></i> <span data-i18n="legendInfra">refinery / infrastructure</span></span>
         </div>
         <section class="detail-drawer" id="detailDrawer" aria-live="polite">
-          <div>
+          <div class="incident-head">
             <p class="eyebrow" data-i18n="selectedEyebrow">Selected item</p>
             <h2 id="detailTitle">Click a point or region</h2>
+            <p id="incidentMeta" class="incident-meta">Aggregated public signals</p>
           </div>
           <p id="detailText">The map shows aggregated public signals. Exact sensitive infrastructure coordinates are not exposed.</p>
+          <div id="incidentStats" class="incident-stats" hidden></div>
+          <div id="incidentTabs" class="incident-tabs" hidden>
+            <button class="incident-tab active" type="button" data-tab="overview">Overview</button>
+            <button class="incident-tab" type="button" data-tab="timeline">Timeline</button>
+            <button class="incident-tab" type="button" data-tab="evidence">Evidence</button>
+            <button class="incident-tab" type="button" data-tab="impact">Impact</button>
+          </div>
+          <div id="incidentPanel" class="incident-panel"></div>
         </section>
       </main>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="./config.js?v=f63def1"></script>
-    <script src="./app.js?v=f63def1"></script>
+    <script src="./config.js?v=incident-drawer"></script>
+    <script src="./app.js?v=incident-drawer"></script>
   </body>
 </html>
