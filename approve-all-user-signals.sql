@@ -91,22 +91,9 @@ where coalesce(title, '') not ilike 'TEST%'
     'Occupied Kherson Oblast full or partial blackout report'
   );
 
--- 4) Approve Sevastopol logistics disruption as an affected-destination signal.
--- Source/origin location is still unknown, so the public label must not claim an exact origin.
-update public.fuel_signals
-set
-  status = 'approved',
-  region = 'Sevastopol / Crimea',
-  place = 'Destination: Sevastopol; source location unknown',
-  lat = 44.60,
-  lng = 33.53,
-  type = 'region',
-  severity = 'watch',
-  note = 'User-submitted report: parcels to Sevastopol are not arriving. Approved only as an affected-destination logistics disruption; source/origin location remains unknown.',
-  confidence = 'Verified by moderator: user-submitted local video/context; source location unknown.',
-  reviewer_note = 'Approved as affected-destination logistics anomaly; not an exact incident-location point.'
-where coalesce(title, '') not ilike 'TEST%'
-  and title = 'Sevastopol parcel delivery disruption report';
+-- 4) Sevastopol logistics disruption is intentionally not handled in this bulk script.
+-- Use repair-corrupted-public-signals.sql or the moderator console for exact-id edits.
+-- Do not run broad Sevastopol updates in a launch batch.
 
 -- 5) Confirm public launch rows.
 select status, count(*) as count
