@@ -78,6 +78,21 @@ where status = 'pending'
 -- set issue_type = 'unconfirmed_anomaly'
 -- where title = 'Sevastopol parcel delivery disruption report';
 
+-- Approve the Yaroslavl / YANOS refinery-area anomaly signal
+-- Keep as unconfirmed unless damage is verified by source/video.
+update public.fuel_signals
+set
+  status = 'approved',
+  confidence = 'Verified by moderator: Telegram screenshot/source reviewed',
+  reviewer_note = 'Approved as refinery-area anomaly near YANOS, 2026-06-28; damage unverified.'
+where status = 'pending'
+  and title = 'Yaroslavl YANOS refinery-area explosion reports';
+
+-- After running supabase-issue-type-migration.sql, classify it as:
+-- update public.fuel_signals
+-- set issue_type = 'unconfirmed_anomaly'
+-- where title = 'Yaroslavl YANOS refinery-area explosion reports';
+
 -- Reject a signal by id
 -- update public.fuel_signals
 -- set status = 'rejected', reviewer_note = 'Rejected after moderator review.'
