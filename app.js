@@ -786,6 +786,13 @@ function renderIncidentPanel() {
   }
 }
 
+function clearSelection() {
+  state.selected = null;
+  state.selectedTab = "overview";
+  document.querySelectorAll(".incident-tab").forEach((item) => item.classList.toggle("active", item.dataset.tab === "overview"));
+  applyTranslations();
+}
+
 function render() {
   markerLayer.clearLayers();
   regionLayer.clearLayers();
@@ -1063,6 +1070,14 @@ document.querySelectorAll(".incident-tab").forEach((button) => {
   });
 });
 
+document.getElementById("closeDetail").addEventListener("click", clearSelection);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && state.selected) {
+    clearSelection();
+  }
+});
+
 document.getElementById("typeInput").addEventListener("change", (event) => {
   if (event.target.value === "infrastructure") {
     document.getElementById("issueTypeInput").value = "infrastructure_damage";
@@ -1143,8 +1158,7 @@ document.getElementById("signalForm").addEventListener("submit", async (event) =
 });
 
 document.getElementById("fitRussia").addEventListener("click", () => {
-  state.selected = null;
-  applyTranslations();
+  clearSelection();
   map.fitBounds([
     [41, 19],
     [77, 170],

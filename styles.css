@@ -514,8 +514,34 @@ button:focus-visible {
   border-radius: 8px;
 }
 
+.detail-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: oklch(16% 0.014 235);
+  color: var(--muted);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.detail-close:hover,
+.detail-close:focus-visible {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 .incident-head {
   min-width: 0;
+  padding-right: 34px;
 }
 
 .detail-drawer h2 {
