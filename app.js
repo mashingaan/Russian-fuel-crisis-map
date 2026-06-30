@@ -29,6 +29,8 @@ const i18n = {
     placePlaceholder: "Irkutsk Oblast, Angarsk",
     mediaLabel: "Media URL",
     videoFileLabel: "Video file",
+    chooseFileButton: "Choose file",
+    noFileChosen: "No file chosen",
     videoUploadDisabled: "Video upload is not configured. Use media URL.",
     videoTooLarge: "Video is too large. Use a link or a smaller file.",
     videoInvalidType: "Only MP4, WebM and MOV video files are supported.",
@@ -114,6 +116,8 @@ const i18n = {
     placePlaceholder: "Иркутская область, Ангарск",
     mediaLabel: "Медиа URL",
     videoFileLabel: "Видеофайл",
+    chooseFileButton: "Выберите файл",
+    noFileChosen: "Файл не выбран",
     videoUploadDisabled: "Загрузка видео не настроена. Используйте ссылку на медиа.",
     videoTooLarge: "Видео слишком большое. Используйте ссылку или файл меньше.",
     uploadingVideo: "Загружаю видео...",
@@ -701,6 +705,7 @@ function applyTranslations() {
   badge.title = publicSyncEnabled ? tr("publicModeReady") : tr("localModeHint");
   document.getElementById("syncMode").textContent = publicSyncEnabled ? tr("publicMode") : tr("localMode");
   document.querySelector(".primary-action").textContent = publicSyncEnabled ? tr("submitReview") : tr("addSignal");
+  updateVideoFileControl()
   setSubmissionStatus(publicSyncEnabled ? tr("publicModeReady") : tr("localModeHint"));
   if (state.selected) selectItem(state.selected);
   else {
@@ -1359,13 +1364,23 @@ function clearUploadPreview() {
   preview.removeAttribute("src")
 }
 
+function updateVideoFileControl() {
+  const input = document.getElementById("videoFileInput")
+  const name = document.getElementById("videoFileName")
+  if (!input || !name) return
+  const file = input.files[0]
+  name.textContent = file ? file.name : tr("noFileChosen")
+}
+
 document.getElementById("videoFileInput").addEventListener("change", (event) => {
   const file = event.target.files[0]
   clearUploadPreview()
+  updateVideoFileControl()
   if (!file) return
   const validationError = videoFileValidationError(file)
   if (validationError) {
     event.target.value = ""
+    updateVideoFileControl()
     setSubmissionStatus(validationError, "error")
     return
   }
@@ -1398,6 +1413,7 @@ document.getElementById("signalForm").addEventListener("submit", async (event) =
       mediaUrl = await uploadVideoFile(videoFile, observedAt);
       document.getElementById("mediaInput").value = mediaUrl
       document.getElementById("videoFileInput").value = ""
+      updateVideoFileControl()
       clearUploadPreview()
     } catch (error) {
       setSubmissionStatus(error.message || tr("videoUploadDisabled"), "error");

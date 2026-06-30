@@ -144,7 +144,11 @@
             </div>
             <label class="field">
               <span data-i18n="videoFileLabel">Video file</span>
-              <input id="videoFileInput" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" />
+              <span class="file-control">
+                <input id="videoFileInput" class="file-control-input" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" />
+                <span class="file-control-button" data-i18n="chooseFileButton">Choose file</span>
+                <span id="videoFileName" class="file-control-name" data-i18n="noFileChosen">No file chosen</span>
+              </span>
               <video id="videoPreview" class="upload-video-preview" controls preload="metadata" playsinline hidden></video>
             </label>
             <label class="check public-precision">

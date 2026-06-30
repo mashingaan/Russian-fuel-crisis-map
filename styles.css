@@ -223,6 +223,138 @@ textarea {
   padding: 10px 12px;
 }
 
+.file-control {
+  position: relative
+}
+
+.file-control {
+  display: flex
+}
+
+.file-control {
+  align-items: center
+}
+
+.file-control {
+  min-height: 40px
+}
+
+.file-control {
+  color: var(--text)
+}
+
+.file-control {
+  background: oklch(18% 0.014 235)
+}
+
+.file-control {
+  border: 1px solid var(--line)
+}
+
+.file-control {
+  border-radius: 7px
+}
+
+.file-control {
+  overflow: hidden
+}
+
+.file-control-input {
+  position: absolute
+}
+
+.file-control-input {
+  inset: 0
+}
+
+.file-control-input {
+  z-index: 2
+}
+
+.file-control-input {
+  opacity: 0
+}
+
+.file-control-input {
+  cursor: pointer
+}
+
+.file-control-button {
+  align-self: stretch
+}
+
+.file-control-button {
+  display: inline-flex
+}
+
+.file-control-button {
+  align-items: center
+}
+
+.file-control-button {
+  padding: 0 12px
+}
+
+.file-control-button {
+  color: white
+}
+
+.file-control-button {
+  background: oklch(42% 0.01 240)
+}
+
+.file-control-button {
+  font-size: 12px
+}
+
+.file-control-button {
+  font-weight: 700
+}
+
+.file-control-button {
+  white-space: nowrap
+}
+
+.file-control-name {
+  min-width: 0
+}
+
+.file-control-name {
+  padding: 0 10px
+}
+
+.file-control-name {
+  overflow: hidden
+}
+
+.file-control-name {
+  color: var(--text)
+}
+
+.file-control-name {
+  font-size: 12px
+}
+
+.file-control-name {
+  font-weight: 650
+}
+
+.file-control-name {
+  text-overflow: ellipsis
+}
+
+.file-control-name {
+  white-space: nowrap
+}
+
+.file-control:focus-within {
+  border-color: var(--accent-2)
+}
+
+.file-control:focus-within {
+  box-shadow: 0 0 0 3px oklch(67% 0.12 175 / 0.18)
+}
+
 input:focus,
 select:focus,
 textarea:focus,
@@ -951,11 +1083,11 @@ button:focus-visible {
 }
 
 .legend {
-  right: 74px
+  right: 52px
 }
 
 @media (max-width: 560px) {
   .legend {
-    right: 56px
+    right: 52px
   }
 }
