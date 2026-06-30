@@ -980,6 +980,42 @@ button:focus-visible {
   max-height: 180px;
 }
 
+.signal-media {
+  display: block
+}
+
+.signal-media {
+  width: 100%
+}
+
+.signal-media {
+  margin: 10px 0
+}
+
+.signal-image {
+  max-height: 240px
+}
+
+.signal-image {
+  object-fit: cover
+}
+
+.signal-image {
+  border: 1px solid var(--line)
+}
+
+.signal-image {
+  border-radius: 7px
+}
+
+.detail-drawer .signal-image {
+  max-width: 320px
+}
+
+.detail-drawer .signal-image {
+  max-height: 180px
+}
+
 .upload-video-preview {
   display: block
 }

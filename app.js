@@ -411,6 +411,25 @@ const seedEvents = [
     issueType: "no_gasoline",
   },
   {
+    id: "chita-truck-fuel-line-gerashchenko-video",
+    type: "station",
+    title: T("Chita: huge truck line for fuel reported", "Chita: huge truck line for fuel reported"),
+    region: T("Zabaykalsky Krai", "Zabaykalsky Krai"),
+    place: T("Chita city area, rounded", "Chita city area, rounded"),
+    lat: 52.03,
+    lng: 113.41,
+    severity: "serious",
+    status: T("X video report shows a huge line of trucks waiting to get fuel in Chita, indicating fuel access stress and possible logistics disruption", "X video report shows a huge line of trucks waiting to get fuel in Chita, indicating fuel access stress and possible logistics disruption"),
+    fuel: T("Truck fuel queue, product unspecified", "Truck fuel queue, product unspecified"),
+    lossWeight: 4,
+    confidence: T("Medium: public X video source, city-level location only", "Medium: public X video source, city-level location only"),
+    source: "seed",
+    sourceUrl: "https://x.com/Gerashchenko_en/status/2071679019393888326",
+    mediaUrl: "media/chita-truck-fuel-line-gerashchenko-2071679019393888326.mp4",
+    observedAt: "2026-06-29",
+    issueType: "long_queues",
+  },
+  {
     id: "central-volga-restrictions",
     type: "region",
     title: T("Central Russia / Volga: limits and shortage cluster", "Центральная Россия / Поволжье: кластер лимитов и дефицита"),
@@ -499,6 +518,100 @@ const seedEvents = [
     mediaUrl: "https://ajvhsopxivqgdvkqytik.supabase.co/storage/v1/object/public/signal-videos/pending/2026-06-29-kaliningrad-chriso-2071677103037198632.mp4",
     observedAt: "2026-06-29",
     issueType: "regional_rationing",
+  },
+  {
+    id: "crimea-poshtove-traction-substation",
+    type: "infrastructure",
+    title: T("Crimea: Poshtove railway traction substation hit", "Crimea: Poshtove railway traction substation hit"),
+    region: T("Crimea", "Crimea"),
+    place: T("Poshtove railway station area, rounded", "Poshtove railway station area, rounded"),
+    lat: 44.83,
+    lng: 33.96,
+    severity: "critical",
+    status: T("X report: Ukrainian attack drones reportedly hit the traction substation powering part of the Sevastopol-Simferopol railway overnight, setting it ablaze and knocking it offline", "X report: Ukrainian attack drones reportedly hit the traction substation powering part of the Sevastopol-Simferopol railway overnight, setting it ablaze and knocking it offline"),
+    fuel: T("Railway power / electric traction substation", "Railway power / electric traction substation"),
+    lossWeight: 7,
+    confidence: T("Medium: public X report with attached satellite context, public point rounded to the Poshtove area", "Medium: public X report with attached satellite context, public point rounded to the Poshtove area"),
+    source: "seed",
+    sourceUrl: "https://x.com/Osinttechnical/status/2071812706026270833",
+    observedAt: "2026-06-30",
+    issueType: "infrastructure_damage",
+  },
+  {
+    id: "russia-euro-2-gasoline-quality-waiver",
+    type: "region",
+    title: T("Russia: Euro 2 gasoline quality waiver proposed", "Russia: Euro 2 gasoline quality waiver proposed"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel policy signal, not a point incident", "Nationwide fuel policy signal, not a point incident"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X report: authorities may allow Euro 2-standard gasoline production for one year to increase supplies by avoiding deeper refining, with potential risk for modern vehicles", "X report: authorities may allow Euro 2-standard gasoline production for one year to increase supplies by avoiding deeper refining, with potential risk for modern vehicles"),
+    fuel: T("Gasoline quality / Euro 2 waiver", "Gasoline quality / Euro 2 waiver"),
+    lossWeight: 5,
+    confidence: T("Medium: public X report, policy signal pending primary regulatory confirmation", "Medium: public X report, policy signal pending primary regulatory confirmation"),
+    source: "seed",
+    sourceUrl: "https://x.com/nexta_tv/status/2071669147117756763",
+    mediaUrl: "media/russia-euro-2-gasoline-quality-nexta-2071669147117756763.jpg",
+    observedAt: "2026-06-29",
+    issueType: "unconfirmed_anomaly",
+  },
+  {
+    id: "russia-euro-3-fuel-car-breakdowns",
+    type: "region",
+    title: T("Russia: car breakdowns reported after lower fuel standard", "Russia: car breakdowns reported after lower fuel standard"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel-quality damage signal, location not verified", "Nationwide fuel-quality damage signal, location not verified"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X video report: motorists complain about warning lights, detonation and power loss after the introduction of an older Euro-3 fuel standard at gas stations", "X video report: motorists complain about warning lights, detonation and power loss after the introduction of an older Euro-3 fuel standard at gas stations"),
+    fuel: T("Fuel quality / Euro-3 vehicle damage reports", "Fuel quality / Euro-3 vehicle damage reports"),
+    lossWeight: 5,
+    confidence: T("Medium: public X video source, reports are not tied to a verified station location", "Medium: public X video source, reports are not tied to a verified station location"),
+    source: "seed",
+    sourceUrl: "https://x.com/Beefeater_Fella/status/2071882519767572620",
+    mediaUrl: "media/russia-euro-3-fuel-car-breakdowns-beefeater-2071882519767572620.mp4",
+    observedAt: "2026-06-30",
+    issueType: "unconfirmed_anomaly",
+  },
+  {
+    id: "russia-fcc-refinery-targeting-campaign",
+    type: "infrastructure",
+    title: T("Russia: FCC refinery units targeted as prolonged fuel-risk driver", "Russia: FCC refinery units targeted as prolonged fuel-risk driver"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide refinery network context, rounded", "Nationwide refinery network context, rounded"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X analysis: Ukraine is reportedly targeting fluid catalytic cracking units at Russian refineries, aiming at complex machinery that Russia may struggle to repair or replace quickly", "X analysis: Ukraine is reportedly targeting fluid catalytic cracking units at Russian refineries, aiming at complex machinery that Russia may struggle to repair or replace quickly"),
+    fuel: T("Refinery FCC units / gasoline output risk", "Refinery FCC units / gasoline output risk"),
+    lossWeight: 6,
+    confidence: T("Medium: public X analysis with explanatory image, strategic pattern needs facility-level corroboration", "Medium: public X analysis with explanatory image, strategic pattern needs facility-level corroboration"),
+    source: "seed",
+    sourceUrl: "https://x.com/ChrisO_wiki/status/2071860127112593893",
+    mediaUrl: "media/russia-fcc-refinery-targeting-chriso-2071860127112593893.jpg",
+    observedAt: "2026-06-30",
+    issueType: "infrastructure_damage",
+  },
+  {
+    id: "russia-fuel-line-parking-ticket-enforcement",
+    type: "region",
+    title: T("Russia: parking tickets issued to vehicles waiting for fuel", "Russia: parking tickets issued to vehicles waiting for fuel"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel-queue enforcement signal, location not verified", "Nationwide fuel-queue enforcement signal, location not verified"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X video report: vehicles waiting in fuel lines are reportedly being ticketed en masse where queues pass through no-parking zones, adding enforcement pressure around shortages", "X video report: vehicles waiting in fuel lines are reportedly being ticketed en masse where queues pass through no-parking zones, adding enforcement pressure around shortages"),
+    fuel: T("Fuel queue enforcement / product unspecified", "Fuel queue enforcement / product unspecified"),
+    lossWeight: 3,
+    confidence: T("Medium: public X video source, exact location not verified", "Medium: public X video source, exact location not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/maria_drutska/status/2071857014896996567",
+    mediaUrl: "media/russia-fuel-line-parking-tickets-drutska-2071857014896996567.mp4",
+    observedAt: "2026-06-30",
+    issueType: "long_queues",
   },
   {
     id: "russia-official-evening-balance",
@@ -897,7 +1010,11 @@ function formatSignalDate(value) {
 }
 
 function isDirectVideoUrl(url) {
-  return /\.(mp4|webm|mov)(\?|#|$)/i.test(url || "");
+  return /\.(mp4|webm|mov)(\?|#|$)/i.test(url || "")
+}
+
+function isDirectImageUrl(url) {
+  return /\.(png|jpe?g|webp|gif)(\?|#|$)/i.test(url || "")
 }
 
 function isAllowedVideoFile(file) {
@@ -922,8 +1039,9 @@ function videoFileValidationError(file) {
 }
 
 function mediaPreviewHtml(url) {
-  if (!isDirectVideoUrl(url)) return "";
-  return `<video class="signal-video" src="${escapeHtml(url)}" controls preload="metadata" playsinline></video>`;
+  if (isDirectImageUrl(url)) return `<img class="signal-media signal-image" src="${escapeHtml(url)}" alt="" loading="lazy">`
+  if (!isDirectVideoUrl(url)) return ""
+  return `<video class="signal-media signal-video" src="${escapeHtml(url)}" controls preload="metadata" playsinline></video>`
 }
 
 const UNKNOWN_DATE_SORT = "0000-00-00";
