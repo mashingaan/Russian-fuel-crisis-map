@@ -309,6 +309,25 @@ const seedEvents = [
     issueType: "price_spike",
   },
   {
+    id: "yalta-gasoline-1000-rub-price-spike",
+    type: "station",
+    title: T("Yalta: gasoline reportedly sold for 1,000 RUB/L", "Yalta: gasoline reportedly sold for 1,000 RUB/L"),
+    region: T("Crimea", "Crimea"),
+    place: T("Yalta city area, rounded", "Yalta city area, rounded"),
+    lat: 44.50,
+    lng: 34.17,
+    severity: "critical",
+    status: T("X video report: occupied Yalta is reportedly breaking fuel price records, with gasoline sold for 1,000 rubles per liter", "X video report: occupied Yalta is reportedly breaking fuel price records, with gasoline sold for 1,000 rubles per liter"),
+    fuel: T("Gasoline price spike", "Gasoline price spike"),
+    lossWeight: 8,
+    confidence: T("Medium: public X video source, city-level location only", "Medium: public X video source, city-level location only"),
+    source: "seed",
+    sourceUrl: "https://x.com/Maks_NAFO_FELLA/status/2071945877220921636",
+    mediaUrl: "media/yalta-gasoline-price-1000-rub-maks-2071945877220921636.mp4",
+    observedAt: "2026-06-30",
+    issueType: "price_spike",
+  },
+  {
     id: "irkutsk-rationing",
     type: "station",
     title: T("Irkutsk Oblast: 50 L/day limit", "Иркутская область: лимит 50 л/день"),
@@ -343,6 +362,25 @@ const seedEvents = [
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
   },
   {
+    id: "anapa-fuel-station-queue-maks-video",
+    type: "station",
+    title: T("Anapa: long fuel station queue reported", "Anapa: long fuel station queue reported"),
+    region: T("Krasnodar Krai", "Krasnodar Krai"),
+    place: T("Anapa city area, rounded", "Anapa city area, rounded"),
+    lat: 44.90,
+    lng: 37.32,
+    severity: "serious",
+    status: T("X video report: long queue at a fuel station in Anapa, Russia", "X video report: long queue at a fuel station in Anapa, Russia"),
+    fuel: T("Gasoline queue, product unspecified", "Gasoline queue, product unspecified"),
+    lossWeight: 4,
+    confidence: T("Medium: public X video source, city-level location only", "Medium: public X video source, city-level location only"),
+    source: "seed",
+    sourceUrl: "https://x.com/Maks_NAFO_FELLA/status/2071924113350791303",
+    mediaUrl: "media/anapa-fuel-station-queue-maks-2071924113350791303.mp4",
+    observedAt: "2026-06-30",
+    issueType: "long_queues",
+  },
+  {
     id: "moscow-oblast-queues",
     type: "station",
     title: T("Moscow / Moscow Oblast: supply risk after refinery hits", "Москва / Московская область: риск поставок после ударов по НПЗ"),
@@ -375,6 +413,25 @@ const seedEvents = [
     source: "reutersEvening",
     sourceUrl: "https://www.straitstimes.com/world/europe/fuel-shortages-spread-to-more-parts-of-russia-as-ukrainian-attacks-bite",
     observedAt: "2026-06-29",
+    issueType: "long_queues",
+  },
+  {
+    id: "moscow-aurus-fuel-queue-nasutki-video",
+    type: "station",
+    title: T("Moscow: government Aurus cars queue for fuel", "Moscow: government Aurus cars queue for fuel"),
+    region: T("Moscow / Moscow Oblast", "Moscow / Moscow Oblast"),
+    place: T("Moscow city, rounded", "Moscow city, rounded"),
+    lat: 55.78,
+    lng: 37.64,
+    severity: "critical",
+    status: T("X video report: government Aurus cars with flashing lights are reportedly waiting in gas-station queues in Moscow", "X video report: government Aurus cars with flashing lights are reportedly waiting in gas-station queues in Moscow"),
+    fuel: T("Gasoline / official vehicle queue", "Gasoline / official vehicle queue"),
+    lossWeight: 5,
+    confidence: T("Medium: public X video source, city-level location only", "Medium: public X video source, city-level location only"),
+    source: "seed",
+    sourceUrl: "https://x.com/NaSutkiOdessa/status/2072004071679013202",
+    mediaUrl: "media/moscow-aurus-fuel-queue-nasutki-2072004071679013202.mp4",
+    observedAt: "2026-06-30",
     issueType: "long_queues",
   },
   {
@@ -430,6 +487,44 @@ const seedEvents = [
     issueType: "long_queues",
   },
   {
+    id: "transbaikal-no-gasoline-two-day-line-heroiam-video",
+    type: "region",
+    title: T("Transbaikal Krai: two-day line at the only fuel station reported", "Transbaikal Krai: two-day line at the only fuel station reported"),
+    region: T("Zabaykalsky Krai", "Zabaykalsky Krai"),
+    place: T("Remote Transbaikal fuel corridor, rounded", "Remote Transbaikal fuel corridor, rounded"),
+    lat: 52.0,
+    lng: 116.0,
+    severity: "critical",
+    status: T("X video report: no gasoline in the area, with drivers reportedly waiting for two days at the only gas station with fuel within roughly 500 km", "X video report: no gasoline in the area, with drivers reportedly waiting for two days at the only gas station with fuel within roughly 500 km"),
+    fuel: T("No gasoline / two-day queue", "No gasoline / two-day queue"),
+    lossWeight: 6,
+    confidence: T("Medium: public X video source, exact station location not verified", "Medium: public X video source, exact station location not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/Heroiam_Slava/status/2071957835433267466",
+    mediaUrl: "media/transbaikal-no-gasoline-two-day-line-heroiam-2071957835433267466.mp4",
+    observedAt: "2026-06-30",
+    issueType: "no_gasoline",
+  },
+  {
+    id: "chita-transbaikal-no-gasoline-35000-place",
+    type: "region",
+    title: T("Transbaikal Krai: gasoline absent around Chita, queue places resold", "Transbaikal Krai: gasoline absent around Chita, queue places resold"),
+    region: T("Zabaykalsky Krai", "Zabaykalsky Krai"),
+    place: T("Remote Transbaikal fuel corridor, rounded", "Remote Transbaikal fuel corridor, rounded"),
+    lat: 52.0,
+    lng: 116.0,
+    severity: "critical",
+    status: T("X video report: no gasoline in Chita and roughly 500 km around it, queues stretch for kilometers, people wait for a second day, and the first place in line is reportedly offered for 35,000 rubles", "X video report: no gasoline in Chita and roughly 500 km around it, queues stretch for kilometers, people wait for a second day, and the first place in line is reportedly offered for 35,000 rubles"),
+    fuel: T("No gasoline / queue resale", "No gasoline / queue resale"),
+    lossWeight: 7,
+    confidence: T("Medium: public X video source, exact station location not verified", "Medium: public X video source, exact station location not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/anarhist363/status/2071963353312894990",
+    mediaUrl: "media/chita-transbaikal-no-gasoline-35000-place-anarhist-2071963353312894990.mp4",
+    observedAt: "2026-06-30",
+    issueType: "no_gasoline",
+  },
+  {
     id: "central-volga-restrictions",
     type: "region",
     title: T("Central Russia / Volga: limits and shortage cluster", "Центральная Россия / Поволжье: кластер лимитов и дефицита"),
@@ -483,13 +578,32 @@ const seedEvents = [
     issueType: "regional_rationing",
   },
   {
+    id: "rostov-lukoil-malinovsky-fuel-queue",
+    type: "station",
+    title: T("Rostov-on-Don: long queue at Lukoil on Malinovsky", "Rostov-on-Don: long queue at Lukoil on Malinovsky"),
+    region: T("Rostov Oblast", "Rostov Oblast"),
+    place: T("Rostov-on-Don, Malinovsky area, rounded", "Rostov-on-Don, Malinovsky area, rounded"),
+    lat: 47.23,
+    lng: 39.61,
+    severity: "serious",
+    status: T("X video report: evening long queue at a Lukoil station on Malinovsky, described as one of the few still open while many other stations have run out of fuel or closed", "X video report: evening long queue at a Lukoil station on Malinovsky, described as one of the few still open while many other stations have run out of fuel or closed"),
+    fuel: T("Gasoline queue / station closures nearby", "Gasoline queue / station closures nearby"),
+    lossWeight: 5,
+    confidence: T("Medium: public X video source, point rounded to Malinovsky area", "Medium: public X video source, point rounded to Malinovsky area"),
+    source: "seed",
+    sourceUrl: "https://x.com/LXSummer1/status/2071713778950082789",
+    mediaUrl: "media/rostov-lukoil-malinovsky-fuel-queue-lxsummer-2071713778950082789.mp4",
+    observedAt: "2026-06-30",
+    issueType: "long_queues",
+  },
+  {
     id: "kaliningrad-novgorod-factbox",
     type: "region",
     title: T("Northwest Russia: Kaliningrad and Novgorod signals", "Северо-Запад: сигналы по Калининграду и Новгороду"),
     region: T("Northwest Russia", "Северо-Запад России"),
     place: T("Kaliningrad Oblast and Novgorod Oblast, rounded", "Калининградская и Новгородская области, округлено"),
-    lat: 57.1,
-    lng: 26.0,
+    lat: 58.5,
+    lng: 31.3,
     severity: "watch",
     status: T("Reuters factbox lists local shortage or restriction signals in northwest regions", "Фактбокс Reuters перечисляет локальные сигналы дефицита или ограничений в северо-западных регионах"),
     fuel: T("Gasoline / diesel", "Бензин / дизель"),
@@ -518,6 +632,43 @@ const seedEvents = [
     mediaUrl: "https://ajvhsopxivqgdvkqytik.supabase.co/storage/v1/object/public/signal-videos/pending/2026-06-29-kaliningrad-chriso-2071677103037198632.mp4",
     observedAt: "2026-06-29",
     issueType: "regional_rationing",
+  },
+  {
+    id: "kaliningrad-gasoline-shortage-comment-screenshot",
+    type: "region",
+    title: T("Kaliningrad: local comment reports week-long gasoline shortages", "Kaliningrad: local comment reports week-long gasoline shortages"),
+    region: T("Kaliningrad Oblast", "Kaliningrad Oblast"),
+    place: T("Kaliningrad Oblast, rounded", "Kaliningrad Oblast, rounded"),
+    lat: 54.7,
+    lng: 20.5,
+    severity: "serious",
+    status: T("User-provided screenshot: local comment says Kaliningrad also has gasoline problems, queues at gas stations, insufficient gasoline for everyone, and many stations without gasoline for a week", "User-provided screenshot: local comment says Kaliningrad also has gasoline problems, queues at gas stations, insufficient gasoline for everyone, and many stations without gasoline for a week"),
+    fuel: T("Gasoline shortage / queues", "Gasoline shortage / queues"),
+    lossWeight: 4,
+    confidence: T("Medium: user-provided screenshot of local comment, not station-level verified", "Medium: user-provided screenshot of local comment, not station-level verified"),
+    source: "seed",
+    mediaUrl: "media/kaliningrad-gasoline-shortage-comment-2026-06-30.jpg",
+    observedAt: "2026-06-30",
+    issueType: "no_gasoline",
+  },
+  {
+    id: "petrozavodsk-gas-station-death-nexta-image",
+    type: "station",
+    title: T("Petrozavodsk: death reported at gas station", "Petrozavodsk: death reported at gas station"),
+    region: T("Republic of Karelia", "Republic of Karelia"),
+    place: T("Petrozavodsk city area, rounded", "Petrozavodsk city area, rounded"),
+    lat: 61.79,
+    lng: 34.36,
+    severity: "critical",
+    status: T("X image report: a 75-year-old man died at a gas station in Petrozavodsk after paying for fuel and filling his tank almost to the top, with preliminary reports citing cardiac arrest", "X image report: a 75-year-old man died at a gas station in Petrozavodsk after paying for fuel and filling his tank almost to the top, with preliminary reports citing cardiac arrest"),
+    fuel: T("Gas station human impact / gasoline", "Gas station human impact / gasoline"),
+    lossWeight: 5,
+    confidence: T("Medium: public X image source, station-level address not verified", "Medium: public X image source, station-level address not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/nexta_tv/status/2071971527319302295",
+    mediaUrl: "media/petrozavodsk-gas-station-death-nexta-2071971527319302295.jpg",
+    observedAt: "2026-06-30",
+    issueType: "unconfirmed_anomaly",
   },
   {
     id: "crimea-poshtove-traction-substation",
@@ -557,6 +708,24 @@ const seedEvents = [
     issueType: "unconfirmed_anomaly",
   },
   {
+    id: "russia-euro-2-kommersant-screenshot",
+    type: "region",
+    title: T("Russia: Kommersant reports Euro-2 gasoline approval expected", "Russia: Kommersant reports Euro-2 gasoline approval expected"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel policy signal, not a point incident", "Nationwide fuel policy signal, not a point incident"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("Screenshot report: Kommersant says Russia is considering Euro-2 gasoline approval next year to saturate the market, increasing supply without deep refining while raising risks for modern cars", "Screenshot report: Kommersant says Russia is considering Euro-2 gasoline approval next year to saturate the market, increasing supply without deep refining while raising risks for modern cars"),
+    fuel: T("Gasoline quality / Euro-2 policy", "Gasoline quality / Euro-2 policy"),
+    lossWeight: 5,
+    confidence: T("Medium: user-provided screenshot citing Kommersant, primary article not attached", "Medium: user-provided screenshot citing Kommersant, primary article not attached"),
+    source: "seed",
+    mediaUrl: "media/russia-euro-2-kommersant-screenshot-2026-06-30.jpg",
+    observedAt: "2026-06-30",
+    issueType: "unconfirmed_anomaly",
+  },
+  {
     id: "russia-euro-3-fuel-car-breakdowns",
     type: "region",
     title: T("Russia: car breakdowns reported after lower fuel standard", "Russia: car breakdowns reported after lower fuel standard"),
@@ -565,13 +734,32 @@ const seedEvents = [
     lat: 58.5,
     lng: 76.0,
     severity: "serious",
-    status: T("X video report: motorists complain about warning lights, detonation and power loss after the introduction of an older Euro-3 fuel standard at gas stations", "X video report: motorists complain about warning lights, detonation and power loss after the introduction of an older Euro-3 fuel standard at gas stations"),
-    fuel: T("Fuel quality / Euro-3 vehicle damage reports", "Fuel quality / Euro-3 vehicle damage reports"),
+    status: T("X video report: motorists complain about warning lights, detonation, power loss and failed fuel pumps after refueling with older Euro-3 gasoline at gas stations", "X video report: motorists complain about warning lights, detonation, power loss and failed fuel pumps after refueling with older Euro-3 gasoline at gas stations"),
+    fuel: T("Fuel quality / Euro-3 vehicle damage and pump failure reports", "Fuel quality / Euro-3 vehicle damage and pump failure reports"),
     lossWeight: 5,
     confidence: T("Medium: public X video source, reports are not tied to a verified station location", "Medium: public X video source, reports are not tied to a verified station location"),
     source: "seed",
     sourceUrl: "https://x.com/Beefeater_Fella/status/2071882519767572620",
     mediaUrl: "media/russia-euro-3-fuel-car-breakdowns-beefeater-2071882519767572620.mp4",
+    observedAt: "2026-06-30",
+    issueType: "unconfirmed_anomaly",
+  },
+  {
+    id: "russia-euro-3-check-engine-nexta-video",
+    type: "region",
+    title: T("Russia: Check Engine warnings linked to Euro-3 gasoline", "Russia: Check Engine warnings linked to Euro-3 gasoline"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel-quality damage signal, location not verified", "Nationwide fuel-quality damage signal, location not verified"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X video report: drivers report Check Engine warnings, misfires, knocking, power loss and attempts to dilute low-grade Euro-3 fuel with higher-octane gasoline, with turbocharged and direct-injection engines especially exposed", "X video report: drivers report Check Engine warnings, misfires, knocking, power loss and attempts to dilute low-grade Euro-3 fuel with higher-octane gasoline, with turbocharged and direct-injection engines especially exposed"),
+    fuel: T("Fuel quality / Euro-3 Check Engine and misfire reports", "Fuel quality / Euro-3 Check Engine and misfire reports"),
+    lossWeight: 5,
+    confidence: T("Medium: public X video source, reports are not tied to a verified station location", "Medium: public X video source, reports are not tied to a verified station location"),
+    source: "seed",
+    sourceUrl: "https://x.com/nexta_tv/status/2071921504229417131",
+    mediaUrl: "media/russia-euro-3-check-engine-nexta-2071921504229417131.mp4",
     observedAt: "2026-06-30",
     issueType: "unconfirmed_anomaly",
   },
@@ -612,6 +800,63 @@ const seedEvents = [
     mediaUrl: "media/russia-fuel-line-parking-tickets-drutska-2071857014896996567.mp4",
     observedAt: "2026-06-30",
     issueType: "long_queues",
+  },
+  {
+    id: "russia-fuel-line-dump-truck-ramming",
+    type: "region",
+    title: T("Russia: dump truck rams cars after fuel-line wait", "Russia: dump truck rams cars after fuel-line wait"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel-queue social impact, location not verified", "Nationwide fuel-queue social impact, location not verified"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X video report: an enraged dump truck driver, reportedly fed up after hours in a fuel line, rammed 17 passenger cars", "X video report: an enraged dump truck driver, reportedly fed up after hours in a fuel line, rammed 17 passenger cars"),
+    fuel: T("Fuel queue social impact", "Fuel queue social impact"),
+    lossWeight: 4,
+    confidence: T("Medium: public X video source, exact location not verified", "Medium: public X video source, exact location not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/VictorKvert2008/status/2071951957074366536",
+    mediaUrl: "media/russia-fuel-line-dump-truck-ramming-victorkvert-2071951957074366536.mp4",
+    observedAt: "2026-06-30",
+    issueType: "long_queues",
+  },
+  {
+    id: "russia-duma-fuel-restrictions-task-force",
+    type: "region",
+    title: T("Russia: Duma says fuel restrictions may persist", "Russia: Duma says fuel restrictions may persist"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide fuel policy messaging signal", "Nationwide fuel policy messaging signal"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "serious",
+    status: T("X video report: after Putin established a task force to stabilize fuel supplies, Duma messaging reportedly said supplies will not stabilize quickly and Russians should get used to fuel restrictions", "X video report: after Putin established a task force to stabilize fuel supplies, Duma messaging reportedly said supplies will not stabilize quickly and Russians should get used to fuel restrictions"),
+    fuel: T("Fuel restrictions / official messaging", "Fuel restrictions / official messaging"),
+    lossWeight: 4,
+    confidence: T("Medium: public X video source, policy messaging signal rather than point incident", "Medium: public X video source, policy messaging signal rather than point incident"),
+    source: "seed",
+    sourceUrl: "https://x.com/maria_drutska/status/2071836630525329498",
+    mediaUrl: "media/russia-duma-fuel-restrictions-task-force-drutska-2071836630525329498.mp4",
+    observedAt: "2026-06-30",
+    issueType: "regional_rationing",
+  },
+  {
+    id: "russia-ambulances-idle-fuel-shortage",
+    type: "region",
+    title: T("Russia: ambulances reportedly idle due to fuel shortage", "Russia: ambulances reportedly idle due to fuel shortage"),
+    region: T("Russia nationwide", "Russia nationwide"),
+    place: T("Nationwide emergency-services fuel impact, location not verified", "Nationwide emergency-services fuel impact, location not verified"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "critical",
+    status: T("X video report: a Russian medic says the fuel shortage is causing a crisis for ambulances, with vehicles standing idle despite fuel supposedly being reserved for emergency services", "X video report: a Russian medic says the fuel shortage is causing a crisis for ambulances, with vehicles standing idle despite fuel supposedly being reserved for emergency services"),
+    fuel: T("Emergency-services fuel availability", "Emergency-services fuel availability"),
+    lossWeight: 7,
+    confidence: T("Medium: public X video source, exact location not verified", "Medium: public X video source, exact location not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/ChrisO_wiki/status/2071951547571855455",
+    mediaUrl: "media/russia-ambulances-idle-fuel-shortage-chriso-2071951547571855455.mp4",
+    observedAt: "2026-06-30",
+    issueType: "regional_rationing",
   },
   {
     id: "russia-official-evening-balance",
@@ -665,6 +910,25 @@ const seedEvents = [
     observedAt: "2026-06-28",
     source: "ap",
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
+  },
+  {
+    id: "slavyansk-refinery-still-burning-bayraktar-image",
+    type: "infrastructure",
+    title: T("Slavyansk-on-Kuban: refinery smoke plume still visible", "Slavyansk-on-Kuban: refinery smoke plume still visible"),
+    region: T("Krasnodar Krai", "Krasnodar Krai"),
+    place: T("Slavyansk-on-Kuban, rounded", "Slavyansk-on-Kuban, rounded"),
+    lat: 45.25,
+    lng: 38.12,
+    severity: "critical",
+    status: T("X image report: large smoke plume still visible from Slavyansk-on-Kuban after the refinery fire, indicating continued burning or aftermath on June 30", "X image report: large smoke plume still visible from Slavyansk-on-Kuban after the refinery fire, indicating continued burning or aftermath on June 30"),
+    fuel: T("Refinery fire / smoke plume", "Refinery fire / smoke plume"),
+    lossWeight: 6,
+    confidence: T("Medium: public X image source, city-level incident context", "Medium: public X image source, city-level incident context"),
+    source: "seed",
+    sourceUrl: "https://x.com/bayraktar_1love/status/2071909622806437921",
+    mediaUrl: "media/slavyansk-refinery-still-burning-bayraktar-2071909622806437921.jpg",
+    observedAt: "2026-06-30",
+    issueType: "infrastructure_damage",
   },
   {
     id: "novoazovsk-bridge-land-corridor",
@@ -747,7 +1011,7 @@ const regionStress = [
   { region: T("Sevastopol price spike", "Севастополь: скачок цены"), lat: 44.6, lng: 33.5, severity: "critical", score: 94, affectedStations: 70, note: T("Limited-sale gasoline price was reported near 189 RUB/L.", "При ограниченной продаже сообщалась цена около 189 руб/л.") },
   { region: T("Western and Central Russia", "Запад и центр России"), lat: 53.9, lng: 36.6, severity: "serious", score: 72, affectedStations: 260, note: T("Reuters factbox lists disruptions or restrictions in Belgorod, Bryansk, Vladimir, Kursk, Lipetsk, Oryol and Tver oblasts.", "Фактбокс Reuters перечисляет перебои или ограничения в Белгородской, Брянской, Владимирской, Курской, Липецкой, Орловской и Тверской областях.") },
   { region: T("Southern corridor", "Южный коридор"), lat: 48.8, lng: 42.4, severity: "serious", score: 70, affectedStations: 210, note: T("Rostov and Volgograd signals point to pressure on southern road and fuel logistics.", "Сигналы Ростова и Волгограда указывают на давление на южную дорожную и топливную логистику.") },
-  { region: T("Northwest shortage signals", "Северо-западные сигналы дефицита"), lat: 57.1, lng: 26.0, severity: "watch", score: 48, affectedStations: 85, note: T("Kaliningrad and Novgorod were included in the June 29 regional factbox.", "Калининград и Новгород включены в региональную сводку 29 июня.") },
+  { region: T("Northwest shortage signals", "Северо-западные сигналы дефицита"), lat: 58.5, lng: 31.3, severity: "watch", score: 48, affectedStations: 85, note: T("Kaliningrad and Novgorod were included in the June 29 regional factbox.", "Калининград и Новгород включены в региональную сводку 29 июня.") },
   { region: T("Nationwide shortage reports", "Общероссийские сообщения о дефиците"), lat: 58.5, lng: 76.0, severity: "serious", score: 66, affectedStations: 1100, note: T("Public reporting indicates restrictions or company-level limits across 55-56 regions.", "Публичные сообщения указывают на ограничения или корпоративные лимиты в 55-56 регионах.") },
 ];
 
@@ -1173,6 +1437,7 @@ function clearSelection() {
 }
 
 function render() {
+  updateClearLocalButton()
   markerLayer.clearLayers();
   regionLayer.clearLayers();
 
@@ -1272,6 +1537,22 @@ function parseCoords(value, shouldRound) {
 
 function saveLocalEvents() {
   localStorage.setItem("fuelCrisisSignals", JSON.stringify(state.localEvents));
+}
+
+function updateClearLocalButton() {
+  const button = document.getElementById("clearLocal")
+  const hasLocalEvents = state.localEvents.length > 0
+  const label = hasLocalEvents
+    ? lang === "ru"
+      ? "Очистить локальные сигналы"
+      : "Clear local browser signals"
+    : lang === "ru"
+      ? "Локальных сигналов для очистки нет"
+      : "No local browser signals to clear"
+
+  button.disabled = !hasLocalEvents
+  button.title = label
+  button.setAttribute("aria-label", label)
 }
 
 async function supabaseRequest(path, options = {}) {
@@ -1587,11 +1868,14 @@ document.getElementById("fitRussia").addEventListener("click", () => {
   ]);
 });
 
-document.getElementById("clearLocal").addEventListener("click", () => {
-  state.localEvents = [];
-  saveLocalEvents();
-  render();
-});
+document.getElementById("clearLocal").addEventListener("click", (event) => {
+  event.stopImmediatePropagation()
+  state.localEvents = []
+  saveLocalEvents()
+  clearSelection()
+  render()
+}, true)
+
 
 applyTranslations();
 document.getElementById("signalDateInput").value = new Date().toISOString().slice(0, 10);
