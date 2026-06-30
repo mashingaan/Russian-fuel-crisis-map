@@ -31,7 +31,10 @@ const i18n = {
     videoFileLabel: "Video file",
     videoUploadDisabled: "Video upload is not configured. Use media URL.",
     videoTooLarge: "Video is too large. Use a link or a smaller file.",
+    videoInvalidType: "Only MP4, WebM and MOV video files are supported.",
+    videoMaxSize: "Max size",
     uploadingVideo: "Uploading video...",
+    videoUploadedRetry: "Video uploaded. Signal submit failed, retry with the generated media URL.",
     signalDateLabel: "Signal date",
     issueLabel: "Problem",
     issueTypeLabel: "Problem",
@@ -187,6 +190,26 @@ const sources = {
     en: "Meduza, June 24-27, 2026: restrictions and shortage indicators across Central, Volga, Southern and Siberian regions.",
     ru: "Meduza, 24-27 июня 2026: ограничения и признаки дефицита в Центральном, Приволжском, Южном и Сибирском регионах.",
   },
+  reutersEvening: {
+    en: "Reuters, June 29 evening: shortages spread to Moscow, Crimea and more Russian regions, with queues, station closures and price spikes.",
+    ru: "Reuters, вечер 29 июня 2026: дефицит расширился до Москвы, Крыма и других регионов, есть очереди, закрытия АЗС и скачки цен.",
+  },
+  reutersFactbox: {
+    en: "Reuters factbox, June 29, 2026: regional fuel disruptions, limits and canister bans across Russia.",
+    ru: "Фактбокс Reuters, 29 июня 2026: региональные перебои, лимиты и запреты на заправку канистр в России.",
+  },
+  kremlinFuel: {
+    en: "Kremlin, June 28, 2026: official meeting on domestic fuel supply and acknowledged station queues.",
+    ru: "Кремль, 28 июня 2026: совещание по снабжению внутреннего рынка топливом и признанные очереди на АЗС.",
+  },
+  minenergoBalance: {
+    en: "Russian Energy Ministry, June 29, 2026: gasoline output, exports and stock data from the monitoring meeting.",
+    ru: "Минэнерго РФ, 29 июня 2026: данные штаба по производству бензина, экспорту и товарным остаткам.",
+  },
+  rosstatPrices: {
+    en: "Rosstat, June 16-22, 2026: weekly fuel price growth before the June 29 evening reports.",
+    ru: "Росстат, 16-22 июня 2026: недельный рост цен на топливо перед вечерними сообщениями 29 июня.",
+  },
   seed: {
     en: "Seed OSINT: starter dataset, verify before treating as fact.",
     ru: "Seed OSINT: стартовая выборка, требует верификации перед публикацией как факт.",
@@ -264,6 +287,24 @@ const seedEvents = [
     sourceUrl: "https://www.rferl.org/a/fuel-crisis-hits-russian-occupied-crimea/33773280.html",
   },
   {
+    id: "sevastopol-evening-price-spike",
+    type: "station",
+    title: T("Sevastopol: limited fuel sale price spike", "Севастополь: скачок цены при ограниченной продаже"),
+    region: T("Sevastopol / Crimea", "Севастополь / Крым"),
+    place: T("Sevastopol, rounded", "Севастополь, округлено"),
+    lat: 44.61,
+    lng: 33.52,
+    severity: "critical",
+    status: T("Reuters reported limited fuel sales near 189 RUB/L, almost triple the regular level", "Reuters сообщил об ограниченной продаже около 189 руб/л, почти втрое выше обычного уровня"),
+    fuel: T("Gasoline", "Бензин"),
+    lossWeight: 9,
+    confidence: T("High", "Высокая"),
+    source: "reutersEvening",
+    sourceUrl: "https://www.straitstimes.com/world/europe/fuel-shortages-spread-to-more-parts-of-russia-as-ukrainian-attacks-bite",
+    observedAt: "2026-06-29",
+    issueType: "price_spike",
+  },
+  {
     id: "irkutsk-rationing",
     type: "station",
     title: T("Irkutsk Oblast: 50 L/day limit", "Иркутская область: лимит 50 л/день"),
@@ -315,6 +356,24 @@ const seedEvents = [
     sourceUrl: "https://www.rferl.org/a/ukraine-russia-oil-refinery-fuel-shortages-kremlin/33787903.html",
   },
   {
+    id: "moscow-evening-shortage",
+    type: "station",
+    title: T("Moscow: queues and closed stations reported", "Москва: сообщения об очередях и закрытых АЗС"),
+    region: T("Moscow / Moscow Oblast", "Москва / Московская область"),
+    place: T("Moscow city, rounded", "Москва, округлено"),
+    lat: 55.78,
+    lng: 37.64,
+    severity: "critical",
+    status: T("Reuters reported queues, some closed gas stations and private-station prices above 80 RUB/L", "Reuters сообщил об очередях, отдельных закрытых АЗС и ценах у частных АЗС выше 80 руб/л"),
+    fuel: T("Gasoline / diesel", "Бензин / дизель"),
+    lossWeight: 9,
+    confidence: T("High", "Высокая"),
+    source: "reutersEvening",
+    sourceUrl: "https://www.straitstimes.com/world/europe/fuel-shortages-spread-to-more-parts-of-russia-as-ukrainian-attacks-bite",
+    observedAt: "2026-06-29",
+    issueType: "long_queues",
+  },
+  {
     id: "far-east-stress",
     type: "region",
     title: T("Far East: early shortage signs", "Дальний Восток: ранние признаки дефицита"),
@@ -328,6 +387,24 @@ const seedEvents = [
     lossWeight: 4,
     confidence: T("Low", "Низкая"),
     source: "seed",
+  },
+  {
+    id: "zabaykalsky-amur-r297-gasoline-unavailable",
+    type: "region",
+    title: T("Zabaykalsky Krai: R-297 Amur gasoline unavailability report", "Zabaykalsky Krai: R-297 Amur gasoline unavailability report"),
+    region: T("Zabaykalsky Krai", "Zabaykalsky Krai"),
+    place: T("R-297 Amur highway, 107 km near Urulga, rounded", "R-297 Amur highway, 107 km near Urulga, rounded"),
+    lat: 51.88,
+    lng: 114.66,
+    severity: "serious",
+    status: T("Public X and Telegram video report: truck driver says he stopped with cargo on the Amur highway because gasoline was unavailable. Location is rounded and medium confidence.", "Public X and Telegram video report: truck driver says he stopped with cargo on the Amur highway because gasoline was unavailable. Location is rounded and medium confidence."),
+    fuel: T("Gasoline unavailable, diesel status unclear", "Gasoline unavailable, diesel status unclear"),
+    lossWeight: 3,
+    confidence: T("Medium: public X and Telegram video source, geolocation inferred from visible road context", "Medium: public X and Telegram video source, geolocation inferred from visible road context"),
+    source: "seed",
+    sourceUrl: "https://x.com/Sandy_mustache/status/2071569090104180760",
+    observedAt: "2026-06-29",
+    issueType: "no_gasoline",
   },
   {
     id: "central-volga-restrictions",
@@ -347,6 +424,115 @@ const seedEvents = [
     sourceUrl: "https://meduza.io/feature/2026/06/27/karta-benzinovogo-krizisa-v-kakih-regionah-rossii-topliva-ne-hvataet-osobenno-silno",
   },
   {
+    id: "western-central-factbox",
+    type: "region",
+    title: T("Western and Central Russia: fresh shortage factbox", "Запад и центр России: свежая сводка дефицита"),
+    region: T("Western and Central Russia", "Запад и центр России"),
+    place: T("Belgorod, Bryansk, Vladimir, Kursk, Lipetsk, Oryol, Tver, rounded", "Белгород, Брянск, Владимир, Курск, Липецк, Орел, Тверь, округлено"),
+    lat: 53.9,
+    lng: 36.6,
+    severity: "serious",
+    status: T("Reuters factbox lists regional disruptions, limits or local shortages across multiple oblasts", "Фактбокс Reuters перечисляет региональные перебои, лимиты или локальный дефицит в нескольких областях"),
+    fuel: T("Gasoline / diesel", "Бензин / дизель"),
+    lossWeight: 7,
+    confidence: T("High", "Высокая"),
+    source: "reutersFactbox",
+    sourceUrl: "https://ru.themoscowtimes.com/2026/06/29/factbox-pereboi-v-postavkakh-topliva-na-vnutrennem-rynke-rf-v-2026g-a199459",
+    observedAt: "2026-06-29",
+    issueType: "regional_rationing",
+  },
+  {
+    id: "southern-factbox",
+    type: "region",
+    title: T("Rostov and Volgograd corridor: reported disruptions", "Ростовско-волгоградский коридор: сообщения о перебоях"),
+    region: T("Rostov / Volgograd", "Ростов / Волгоград"),
+    place: T("Rostov Oblast and Volgograd Oblast, rounded", "Ростовская и Волгоградская области, округлено"),
+    lat: 48.8,
+    lng: 42.4,
+    severity: "serious",
+    status: T("Reuters factbox includes southern-region fuel disruptions and logistics stress", "Фактбокс Reuters включает перебои с топливом и логистический стресс в южных регионах"),
+    fuel: T("Gasoline / diesel", "Бензин / дизель"),
+    lossWeight: 7,
+    confidence: T("High", "Высокая"),
+    source: "reutersFactbox",
+    sourceUrl: "https://ru.themoscowtimes.com/2026/06/29/factbox-pereboi-v-postavkakh-topliva-na-vnutrennem-rynke-rf-v-2026g-a199459",
+    observedAt: "2026-06-29",
+    issueType: "regional_rationing",
+  },
+  {
+    id: "kaliningrad-novgorod-factbox",
+    type: "region",
+    title: T("Northwest Russia: Kaliningrad and Novgorod signals", "Северо-Запад: сигналы по Калининграду и Новгороду"),
+    region: T("Northwest Russia", "Северо-Запад России"),
+    place: T("Kaliningrad Oblast and Novgorod Oblast, rounded", "Калининградская и Новгородская области, округлено"),
+    lat: 57.1,
+    lng: 26.0,
+    severity: "watch",
+    status: T("Reuters factbox lists local shortage or restriction signals in northwest regions", "Фактбокс Reuters перечисляет локальные сигналы дефицита или ограничений в северо-западных регионах"),
+    fuel: T("Gasoline / diesel", "Бензин / дизель"),
+    lossWeight: 4,
+    confidence: T("Medium", "Средняя"),
+    source: "reutersFactbox",
+    sourceUrl: "https://ru.themoscowtimes.com/2026/06/29/factbox-pereboi-v-postavkakh-topliva-na-vnutrennem-rynke-rf-v-2026g-a199459",
+    observedAt: "2026-06-29",
+    issueType: "regional_rationing",
+  },
+  {
+    id: "kaliningrad-fuel-queues-chriso-video",
+    type: "region",
+    title: T("Kaliningrad: fuel queues, rationing and pump failures reported", "Kaliningrad: fuel queues, rationing and pump failures reported"),
+    region: T("Kaliningrad Oblast", "Kaliningrad Oblast"),
+    place: T("Kaliningrad Oblast, rounded", "Kaliningrad Oblast, rounded"),
+    lat: 54.7,
+    lng: 20.5,
+    severity: "serious",
+    status: T("X video report claims fuel prices soared, rationing was introduced, gas stations had kilometre-long queues, many stations had no fuel, and extreme heat was causing pump failures", "X video report claims fuel prices soared, rationing was introduced, gas stations had kilometre-long queues, many stations had no fuel, and extreme heat was causing pump failures"),
+    fuel: T("Gasoline / diesel, availability and rationing reported", "Gasoline / diesel, availability and rationing reported"),
+    lossWeight: 5,
+    confidence: T("Medium: public X video source, needs local corroboration", "Medium: public X video source, needs local corroboration"),
+    source: "seed",
+    sourceUrl: "https://x.com/ChrisO_wiki/status/2071677103037198632",
+    mediaUrl: "https://ajvhsopxivqgdvkqytik.supabase.co/storage/v1/object/public/signal-videos/pending/2026-06-29-kaliningrad-chriso-2071677103037198632.mp4",
+    observedAt: "2026-06-29",
+    issueType: "regional_rationing",
+  },
+  {
+    id: "russia-official-evening-balance",
+    type: "region",
+    title: T("Russia: official fuel balance update", "Россия: официальное обновление топливного баланса"),
+    region: T("Russia nationwide", "Россия, общероссийский уровень"),
+    place: T("Nationwide aggregation, rounded", "Общероссийская агрегация, округлено"),
+    lat: 58.5,
+    lng: 76.0,
+    severity: "watch",
+    status: T("Energy Ministry reported 3.0215 Mt gasoline output in June, 1.6334 Mt stocks on June 29 and 176.5 kt June gasoline exports", "Минэнерго сообщило о 3,0215 млн т выпуска бензина в июне, 1,6334 млн т остатков на 29 июня и 176,5 тыс т экспорта бензина за июнь"),
+    fuel: T("Gasoline balance", "Баланс бензина"),
+    lossWeight: 3,
+    confidence: T("High", "Высокая"),
+    source: "minenergoBalance",
+    sourceUrl: "https://minenergo.gov.ru/press-center/news-and-events?news-item=itogi-ocherednogo-shtaba-po-monitoringu-proizvodstva-i-potrebleniya-nefteproduktov-v-rossii-22",
+    observedAt: "2026-06-29",
+    issueType: "unconfirmed_anomaly",
+  },
+  {
+    id: "kremlin-fuel-acknowledgement",
+    type: "region",
+    title: T("Federal level: queues acknowledged", "Федеральный уровень: очереди признаны"),
+    region: T("Russia nationwide", "Россия, общероссийский уровень"),
+    place: T("Government fuel meeting", "Совещание по топливу"),
+    lat: 57.8,
+    lng: 65.0,
+    severity: "serious",
+    status: T("Official meeting acknowledged supply problems and gas-station queues while describing the situation as manageable", "На официальном совещании признали проблемы снабжения и очереди на АЗС, одновременно называя ситуацию управляемой"),
+    fuel: T("Gasoline / diesel", "Бензин / дизель"),
+    lossWeight: 5,
+    confidence: T("High", "Высокая"),
+    source: "kremlinFuel",
+    sourceUrl: "https://www.kremlin.ru/events/president/news/80174/print",
+    observedAt: "2026-06-28",
+    issueType: "regional_rationing",
+  },
+  {
     id: "slavyansk-refinery",
     type: "infrastructure",
     title: T("Slavyansk-on-Kuban: refinery fire after strike", "Славянск-на-Кубани: пожар на НПЗ после удара"),
@@ -362,6 +548,24 @@ const seedEvents = [
     observedAt: "2026-06-28",
     source: "ap",
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
+  },
+  {
+    id: "novoazovsk-bridge-land-corridor",
+    type: "infrastructure",
+    title: T("Novoazovsk: bridge damage on land corridor to Crimea", "Novoazovsk: bridge damage on land corridor to Crimea"),
+    region: T("Donetsk Oblast", "Donetsk Oblast"),
+    place: T("Novoazovsk bridge, rounded", "Novoazovsk bridge, rounded"),
+    lat: 47.12,
+    lng: 38.07,
+    severity: "critical",
+    status: T("X report: Russian sources claim the bridge partially collapsed after a second Ukrainian drone strike. The same bridge was reportedly attacked on June 15, with earlier damage limited to roadway holes. Infrastructure and logistics corridor disruption, public point rounded.", "X report: Russian sources claim the bridge partially collapsed after a second Ukrainian drone strike. The same bridge was reportedly attacked on June 15, with earlier damage limited to roadway holes. Infrastructure and logistics corridor disruption, public point rounded."),
+    fuel: T("Road bridge / land logistics corridor", "Road bridge / land logistics corridor"),
+    lossWeight: 8,
+    confidence: T("Medium: public X report and attached imagery, exact damage state requires further confirmation", "Medium: public X report and attached imagery, exact damage state requires further confirmation"),
+    source: "seed",
+    sourceUrl: "https://x.com/bayraktar_1love/status/2071603971848802601",
+    observedAt: "2026-06-29",
+    issueType: "infrastructure_damage",
   },
   {
     id: "yaroslavl-refinery",
@@ -422,6 +626,11 @@ const regionStress = [
   { region: T("Far East", "Дальний Восток"), lat: 48.7, lng: 134.9, severity: "watch", score: 36, affectedStations: 70, note: T("Remote logistics raise shortage risk.", "Удаленная логистика повышает риск перебоев.") },
   { region: T("Ryazan Oblast", "Рязанская область"), lat: 54.6, lng: 39.7, severity: "serious", score: 54, affectedStations: 45, note: T("Risk from refining disruption.", "Риск от перебоев переработки.") },
   { region: T("Volgograd Oblast", "Волгоградская область"), lat: 49.1, lng: 44.6, severity: "serious", score: 56, affectedStations: 72, note: T("Southern transport corridor and refinery exposure.", "Южный транспортный коридор и НПЗ.") },
+  { region: T("Moscow evening shortage", "Москва: вечерний дефицит"), lat: 55.8, lng: 37.6, severity: "critical", score: 82, affectedStations: 180, note: T("Reuters reported queues, closed stations and private-station prices above 80 RUB/L on June 29 evening.", "Reuters сообщил об очередях, закрытых АЗС и ценах у частных АЗС выше 80 руб/л вечером 29 июня.") },
+  { region: T("Sevastopol price spike", "Севастополь: скачок цены"), lat: 44.6, lng: 33.5, severity: "critical", score: 94, affectedStations: 70, note: T("Limited-sale gasoline price was reported near 189 RUB/L.", "При ограниченной продаже сообщалась цена около 189 руб/л.") },
+  { region: T("Western and Central Russia", "Запад и центр России"), lat: 53.9, lng: 36.6, severity: "serious", score: 72, affectedStations: 260, note: T("Reuters factbox lists disruptions or restrictions in Belgorod, Bryansk, Vladimir, Kursk, Lipetsk, Oryol and Tver oblasts.", "Фактбокс Reuters перечисляет перебои или ограничения в Белгородской, Брянской, Владимирской, Курской, Липецкой, Орловской и Тверской областях.") },
+  { region: T("Southern corridor", "Южный коридор"), lat: 48.8, lng: 42.4, severity: "serious", score: 70, affectedStations: 210, note: T("Rostov and Volgograd signals point to pressure on southern road and fuel logistics.", "Сигналы Ростова и Волгограда указывают на давление на южную дорожную и топливную логистику.") },
+  { region: T("Northwest shortage signals", "Северо-западные сигналы дефицита"), lat: 57.1, lng: 26.0, severity: "watch", score: 48, affectedStations: 85, note: T("Kaliningrad and Novgorod were included in the June 29 regional factbox.", "Калининград и Новгород включены в региональную сводку 29 июня.") },
   { region: T("Nationwide shortage reports", "Общероссийские сообщения о дефиците"), lat: 58.5, lng: 76.0, severity: "serious", score: 66, affectedStations: 1100, note: T("Public reporting indicates restrictions or company-level limits across 55-56 regions.", "Публичные сообщения указывают на ограничения или корпоративные лимиты в 55-56 регионах.") },
 ];
 
@@ -662,6 +871,7 @@ function matchesIncident(incident) {
 }
 
 function popupHtml(item) {
+  const directMediaHtml = item.sourceUrl && item.mediaUrl ? mediaPreviewHtml(item.mediaUrl) : ""
   const link = item.sourceUrl || item.mediaUrl;
   const safeLink = escapeHtml(link);
   const linkHtml = link ? `<a class="popup-link" href="${safeLink}" target="_blank" rel="noreferrer">${tr("openSource")}</a>` : "";
@@ -669,6 +879,7 @@ function popupHtml(item) {
   return `
     <h3 class="popup-title">${escapeHtml(textOf(item.title))}</h3>
     <p class="popup-meta">${escapeHtml(textOf(item.place))}<br>${formatSignalDate(item.observedAt)}${escapeHtml(textOf(item.status))}<br>${tr("issueTypeLabel")}: ${escapeHtml(issueLabel(issueTypeOf(item)))}<br>${tr("fuel")}: ${escapeHtml(textOf(item.fuel) || tr("noFuel"))}<br>${tr("verification")}: ${escapeHtml(textOf(item.confidence) || tr("noFuel"))}</p>
+    ${directMediaHtml}
     ${videoHtml}
     <p class="popup-meta">${escapeHtml(sourceText(item.source))}</p>
     ${linkHtml}
@@ -682,6 +893,27 @@ function formatSignalDate(value) {
 
 function isDirectVideoUrl(url) {
   return /\.(mp4|webm|mov)(\?|#|$)/i.test(url || "");
+}
+
+function isAllowedVideoFile(file) {
+  if (!file) return false
+  const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"]
+  const allowedName = /\.(mp4|webm|mov)$/i.test(file.name || "")
+  return allowedTypes.includes(file.type) || allowedName
+}
+
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes)) return ""
+  if (bytes >= 1048576) return `${Math.round(bytes / 1048576)} MB`
+  return `${Math.round(bytes / 1024)} KB`
+}
+
+function videoFileValidationError(file) {
+  if (!file) return ""
+  if (!isAllowedVideoFile(file)) return tr("videoInvalidType")
+  const maxBytes = syncConfig.maxVideoBytes || 52428800
+  if (file.size > maxBytes) return `${tr("videoTooLarge")} ${tr("videoMaxSize")}: ${formatBytes(maxBytes)}.`
+  return ""
 }
 
 function mediaPreviewHtml(url) {
@@ -730,6 +962,7 @@ function sourceUrlOf(signal) {
 }
 
 function signalCard(signal) {
+  const directMediaHtml = signal.sourceUrl && signal.mediaUrl ? mediaPreviewHtml(signal.mediaUrl) : ""
   const link = sourceUrlOf(signal);
   const sourceLink = link ? `<a class="source-link" href="${escapeHtml(link)}" target="_blank" rel="noreferrer">${tr("openSource")}</a>` : "";
   return `
@@ -740,6 +973,7 @@ function signalCard(signal) {
       </div>
       <p>${escapeHtml(textOf(signal.status) || tr("noDescription"))}</p>
       <p class="evidence-meta">${tr("issueTypeLabel")}: ${escapeHtml(issueLabel(issueTypeOf(signal)))} · ${tr("verification")}: ${escapeHtml(textOf(signal.confidence) || tr("localConfidence"))}</p>
+      ${directMediaHtml}
       ${mediaPreviewHtml(link)}
       ${sourceLink}
     </article>
@@ -944,9 +1178,9 @@ async function uploadVideoFile(file, observedAt) {
   if (!publicSyncEnabled || !syncConfig.videoUploadEnabled) {
     throw new Error(tr("videoUploadDisabled"));
   }
-  const maxBytes = syncConfig.maxVideoBytes || 52428800;
-  if (file.size > maxBytes) {
-    throw new Error(tr("videoTooLarge"));
+  const validationError = videoFileValidationError(file)
+  if (validationError) {
+    throw new Error(validationError)
   }
 
   const bucket = encodeURIComponent(syncConfig.videoBucket || "signal-videos");
@@ -1115,6 +1349,33 @@ document.getElementById("searchInput").addEventListener("input", (event) => {
   render();
 });
 
+let uploadPreviewUrl = ""
+
+function clearUploadPreview() {
+  const preview = document.getElementById("videoPreview")
+  if (uploadPreviewUrl) URL.revokeObjectURL(uploadPreviewUrl)
+  uploadPreviewUrl = ""
+  preview.hidden = true
+  preview.removeAttribute("src")
+}
+
+document.getElementById("videoFileInput").addEventListener("change", (event) => {
+  const file = event.target.files[0]
+  clearUploadPreview()
+  if (!file) return
+  const validationError = videoFileValidationError(file)
+  if (validationError) {
+    event.target.value = ""
+    setSubmissionStatus(validationError, "error")
+    return
+  }
+  uploadPreviewUrl = URL.createObjectURL(file)
+  const preview = document.getElementById("videoPreview")
+  preview.src = uploadPreviewUrl
+  preview.hidden = false
+  setSubmissionStatus(`${file.name} - ${formatBytes(file.size)}`, "success")
+})
+
 document.getElementById("signalForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const coords = parseCoords(document.getElementById("coordsInput").value, document.getElementById("roundInput").checked);
@@ -1135,6 +1396,9 @@ document.getElementById("signalForm").addEventListener("submit", async (event) =
     try {
       setSubmissionStatus(tr("uploadingVideo"));
       mediaUrl = await uploadVideoFile(videoFile, observedAt);
+      document.getElementById("mediaInput").value = mediaUrl
+      document.getElementById("videoFileInput").value = ""
+      clearUploadPreview()
     } catch (error) {
       setSubmissionStatus(error.message || tr("videoUploadDisabled"), "error");
       return;
@@ -1166,13 +1430,14 @@ document.getElementById("signalForm").addEventListener("submit", async (event) =
       setSubmissionStatus(tr("submittedForReview"), "success");
     } catch (error) {
       console.error("Public signal submit failed", error);
-      setSubmissionStatus(tr("submitFailed"), "error");
+      setSubmissionStatus(mediaUrl ? tr("videoUploadedRetry") : tr("submitFailed"), "error")
     }
   }
 
   state.localEvents.unshift(item);
   saveLocalEvents();
   event.target.reset();
+  clearUploadPreview()
   document.getElementById("signalDateInput").value = new Date().toISOString().slice(0, 10);
   document.getElementById("roundInput").checked = true;
   render();

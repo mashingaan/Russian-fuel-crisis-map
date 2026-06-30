@@ -240,6 +240,46 @@ p {
   max-width: 980px;
 }
 
+.media-preview {
+  margin-top: -4px
+}
+
+.media-preview {
+  padding: 10px
+}
+
+.media-preview {
+  border: 1px solid var(--line)
+}
+
+.media-preview {
+  border-radius: 8px
+}
+
+.media-preview {
+  background: var(--panel)
+}
+
+.media-video {
+  display: block
+}
+
+.media-video {
+  width: 100%
+}
+
+.media-video {
+  max-height: 360px
+}
+
+.media-video {
+  border-radius: 7px
+}
+
+.media-video {
+  background: oklch(10% 0.01 210)
+}
+
 .detail-header {
   display: flex;
   justify-content: space-between;

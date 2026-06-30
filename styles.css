@@ -848,6 +848,34 @@ button:focus-visible {
   max-height: 180px;
 }
 
+.upload-video-preview {
+  display: block
+}
+
+.upload-video-preview {
+  width: 100%
+}
+
+.upload-video-preview {
+  max-height: 220px
+}
+
+.upload-video-preview {
+  margin-top: 8px
+}
+
+.upload-video-preview {
+  border: 1px solid var(--line)
+}
+
+.upload-video-preview {
+  border-radius: 7px
+}
+
+.upload-video-preview {
+  background: oklch(10% 0.01 235)
+}
+
 .leaflet-control-attribution {
   color: var(--muted);
   background: oklch(18% 0.014 235 / 0.88) !important;
@@ -919,5 +947,15 @@ button:focus-visible {
     left: 12px;
     right: 12px;
     bottom: 12px;
+  }
+}
+
+.legend {
+  right: 74px
+}
+
+@media (max-width: 560px) {
+  .legend {
+    right: 56px
   }
 }

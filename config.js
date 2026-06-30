@@ -6,7 +6,7 @@ window.FUEL_MAP_CONFIG = {
   moderatorRedirectUrl: "https://mashingaan.github.io/Russian-fuel-crisis-map/moderate.html",
   showPendingPublicSignals: false,
   supportsIssueType: false,
-  videoUploadEnabled: false,
+  videoUploadEnabled: true,
   videoBucket: "signal-videos",
   maxVideoBytes: 52428800,
 };

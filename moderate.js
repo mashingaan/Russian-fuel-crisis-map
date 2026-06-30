@@ -34,6 +34,7 @@
     approveButton: document.getElementById("approveButton"),
     saveButton: document.getElementById("saveButton"),
     sourceLink: document.getElementById("sourceLink"),
+    mediaPreview: document.getElementById("mediaPreview"),
     toast: document.getElementById("toast"),
     fields: {
       title: document.getElementById("titleField"),
@@ -61,6 +62,21 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
+  }
+
+  function isDirectVideoUrl(url) {
+    return /\.(mp4|webm|mov)(\?|#|$)/i.test(url || "")
+  }
+
+  function mediaPreviewHtml(url) {
+    if (!isDirectVideoUrl(url)) return ""
+    return `<video class="media-video" src="${escapeHtml(url)}" controls preload="metadata" playsinline></video>`
+  }
+
+  function renderMediaPreview(url) {
+    const previewHtml = mediaPreviewHtml(url)
+    els.mediaPreview.hidden = !previewHtml
+    els.mediaPreview.innerHTML = previewHtml
   }
 
   function showToast(message, type) {
@@ -193,7 +209,11 @@
     els.emptyDetail.hidden = Boolean(row);
     els.detailForm.hidden = !row;
 
-    if (!row) return;
+    if (!row) {
+      els.mediaPreview.hidden = true
+      els.mediaPreview.innerHTML = ""
+      return
+    }
 
     els.detailStatus.textContent = row.status || "pending";
     els.detailTitle.textContent = row.title || "Signal";
@@ -212,6 +232,9 @@
     setField("note", row.note);
     setField("confidence", row.confidence);
     setField("reviewer_note", row.reviewer_note);
+
+    renderMediaPreview(row.media_url)
+
 
     if (row.media_url) {
       els.sourceLink.hidden = false;
@@ -549,6 +572,9 @@
       event.preventDefault();
       updateSelected({}, "Saved.");
     });
+    els.fields.media_url.addEventListener("input", () => {
+      renderMediaPreview(els.fields.media_url.value.trim())
+    })
     els.approveButton.addEventListener("click", () => {
       updateSelected(
         {
