@@ -465,6 +465,106 @@ button:focus-visible {
   min-height: 28px;
 }
 
+.station-status-box {
+  display: grid
+}
+
+.station-status-box {
+  gap: 12px
+}
+
+.station-status-box {
+  padding: 12px
+}
+
+.station-status-box {
+  border: 1px solid var(--line)
+}
+
+.station-status-box {
+  border-radius: 8px
+}
+
+.station-status-box {
+  background: oklch(18% 0.014 235)
+}
+
+.station-status-head {
+  display: flex
+}
+
+.station-status-head {
+  align-items: baseline
+}
+
+.station-status-head {
+  justify-content: space-between
+}
+
+.station-status-head {
+  gap: 12px
+}
+
+.station-status-head span {
+  color: var(--text)
+}
+
+.station-status-head span {
+  font-size: 13px
+}
+
+.station-status-head span {
+  font-weight: 800
+}
+
+.station-status-head small {
+  color: var(--weak)
+}
+
+.station-status-head small {
+  font-size: 11px
+}
+
+.fuel-grade-grid {
+  display: grid
+}
+
+.fuel-grade-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr))
+}
+
+.fuel-grade-grid {
+  gap: 8px
+}
+
+.fuel-grade-grid .check {
+  justify-content: center
+}
+
+.fuel-grade-grid .check {
+  min-width: 0
+}
+
+.fuel-grade-grid .check {
+  min-height: 32px
+}
+
+.fuel-grade-grid .check {
+  padding: 0 8px
+}
+
+.fuel-grade-grid .check {
+  border: 1px solid var(--line)
+}
+
+.fuel-grade-grid .check {
+  border-radius: 7px
+}
+
+.fuel-grade-grid .check {
+  background: oklch(16% 0.014 235)
+}
+
 .submission-status {
   min-height: 18px;
   margin: -2px 0 0;
@@ -1105,6 +1205,10 @@ button:focus-visible {
 
   .segmented {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .fuel-grade-grid {
+    grid-template-columns: 1fr 1fr
   }
 
   .topbar {

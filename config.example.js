@@ -9,4 +9,9 @@ window.FUEL_MAP_CONFIG = {
   videoUploadEnabled: true,
   videoBucket: "signal-videos",
   maxVideoBytes: 52428800,
+  fuelDataProviders: {
+    priceProxyUrl: "",
+    availabilityProxyUrl: "",
+    trafficProxyUrl: "",
+  },
 };

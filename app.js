@@ -51,6 +51,29 @@ const i18n = {
     issueRegionalRationing: "Regional rationing",
     issueInfrastructureDamage: "Infrastructure damage",
     issueUnconfirmed: "Unconfirmed anomaly",
+    stationIntelTitle: "Station intel",
+    stationIntelHint: "optional, for gas-station signals",
+    fuelStatusLabel: "Fuel status",
+    fuelStatusUnknown: "Unknown",
+    fuelStatusAvailable: "Fuel available",
+    fuelStatusPartial: "Some grades missing",
+    fuelStatusDry: "No fuel",
+    fuelStatusLimit: "Limit or voucher sale",
+    fuelDiesel: "Diesel",
+    fuelLpg: "LPG",
+    queueLabel: "Queue",
+    queueUnknown: "Unknown",
+    queueNone: "No queue",
+    queueShort: "2-5 cars",
+    queueMedium: "6-15 cars",
+    queueLong: "15+ cars",
+    queueExtreme: "Road queue",
+    priceLabel: "Price or limit",
+    pricePlaceholder: "AI-95 82 RUB, limit 30 L",
+    stationStatusPrefix: "Station status",
+    fuelGradesPrefix: "Reported fuel",
+    queuePrefix: "Queue",
+    pricePrefix: "Price or limit",
     roundPublic: "Round public map point",
     addSignal: "Add to map",
     submitReview: "Submit for review",
@@ -135,6 +158,29 @@ const i18n = {
     issueRegionalRationing: "Региональное нормирование",
     issueInfrastructureDamage: "Повреждение инфраструктуры",
     issueUnconfirmed: "Неподтвержденная аномалия",
+    stationIntelTitle: "Статус АЗС",
+    stationIntelHint: "необязательно, только для АЗС",
+    fuelStatusLabel: "Наличие топлива",
+    fuelStatusUnknown: "Неизвестно",
+    fuelStatusAvailable: "Топливо есть",
+    fuelStatusPartial: "Часть марок отсутствует",
+    fuelStatusDry: "Топлива нет",
+    fuelStatusLimit: "Лимит или талоны",
+    fuelDiesel: "Дизель",
+    fuelLpg: "Газ",
+    queueLabel: "Очередь",
+    queueUnknown: "Неизвестно",
+    queueNone: "Нет очереди",
+    queueShort: "2-5 машин",
+    queueMedium: "6-15 машин",
+    queueLong: "15+ машин",
+    queueExtreme: "Очередь на дороге",
+    priceLabel: "Цена или лимит",
+    pricePlaceholder: "АИ-95 82 руб, лимит 30 л",
+    stationStatusPrefix: "Статус АЗС",
+    fuelGradesPrefix: "Марки топлива",
+    queuePrefix: "Очередь",
+    pricePrefix: "Цена или лимит",
     roundPublic: "Округлять точку на публичной карте",
     addSignal: "Добавить на карту",
     submitReview: "Отправить на проверку",
@@ -270,6 +316,46 @@ function inferIssueType(item) {
 
 function issueTypeOf(item) {
   return item.issueType || item.issue_type || inferIssueType(item);
+}
+
+function selectedFuelGrades() {
+  return [...document.querySelectorAll('input[name="fuelGrade"]:checked')].map((input) => input.value)
+}
+
+function stationStatusLabel(value) {
+  const labels = {
+    available: "fuelStatusAvailable",
+    partial: "fuelStatusPartial",
+    dry: "fuelStatusDry",
+    limit: "fuelStatusLimit",
+    none: "queueNone",
+    short: "queueShort",
+    medium: "queueMedium",
+    long: "queueLong",
+    extreme: "queueExtreme",
+  }
+  return tr(labels[value] || "fuelStatusUnknown")
+}
+
+function buildStationIntel() {
+  const fuelStatus = document.getElementById("fuelStatusInput")?.value || ""
+  const queue = document.getElementById("queueInput")?.value || ""
+  const price = document.getElementById("priceInput")?.value.trim() || ""
+  const grades = selectedFuelGrades()
+  const parts = []
+
+  if (fuelStatus) parts.push(`${tr("stationStatusPrefix")}: ${stationStatusLabel(fuelStatus)}`)
+  if (grades.length) parts.push(`${tr("fuelGradesPrefix")}: ${grades.join(", ")}`)
+  if (queue) parts.push(`${tr("queuePrefix")}: ${stationStatusLabel(queue)}`)
+  if (price) parts.push(`${tr("pricePrefix")}: ${price}`)
+
+  const fuelSummary = grades.length ? grades.join(" / ") : fuelStatus ? stationStatusLabel(fuelStatus) : tr("noFuel")
+
+  return {
+    text: parts.join(". "),
+    fuel: fuelSummary,
+    hasStationIntel: Boolean(parts.length),
+  }
 }
 
 const seedEvents = [
@@ -542,6 +628,25 @@ const seedEvents = [
     sourceUrl: "https://meduza.io/feature/2026/06/27/karta-benzinovogo-krizisa-v-kakih-regionah-rossii-topliva-ne-hvataet-osobenno-silno",
   },
   {
+    id: "bashkortostan-30-liters-per-car-idel-realii",
+    type: "region",
+    title: T("Bashkortostan: 30-liter fuel limit per vehicle reported", "Bashkortostan: 30-liter fuel limit per vehicle reported"),
+    region: T("Republic of Bashkortostan", "Republic of Bashkortostan"),
+    place: T("Bashkortostan, rounded to Ufa region", "Bashkortostan, rounded to Ufa region"),
+    lat: 54.74,
+    lng: 55.97,
+    severity: "serious",
+    status: T("X video report from Idel.Realii describes fuel restrictions in Bashkortostan, including a 30-liter limit per vehicle", "X video report from Idel.Realii describes fuel restrictions in Bashkortostan, including a 30-liter limit per vehicle"),
+    fuel: T("Gasoline / diesel purchase limit", "Gasoline / diesel purchase limit"),
+    lossWeight: 5,
+    confidence: T("Medium: public X video source, exact station locations not verified", "Medium: public X video source, exact station locations not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/Idel_Realii/status/2071603588728537473",
+    mediaUrl: "media/bashkortostan-30-liters-per-car-idel-realii-2071603588728537473.mp4",
+    observedAt: "2026-06-29",
+    issueType: "regional_rationing",
+  },
+  {
     id: "western-central-factbox",
     type: "region",
     title: T("Western and Central Russia: fresh shortage factbox", "Запад и центр России: свежая сводка дефицита"),
@@ -615,6 +720,24 @@ const seedEvents = [
     issueType: "regional_rationing",
   },
   {
+    id: "st-petersburg-leningrad-carriers-fuel-shortage",
+    type: "region",
+    title: T("St Petersburg / Leningrad: carriers seek help over fuel shortages", "St Petersburg / Leningrad: carriers seek help over fuel shortages"),
+    region: T("St Petersburg / Leningrad Oblast", "St Petersburg / Leningrad Oblast"),
+    place: T("St Petersburg and Leningrad Oblast, rounded", "St Petersburg and Leningrad Oblast, rounded"),
+    lat: 59.94,
+    lng: 30.32,
+    severity: "serious",
+    status: T("Screenshot report: regional carriers are appealing to authorities over fuel shortages and exchange price rises, warning that transport companies, ambulance companies and agricultural enterprises may be affected by supply disruptions and penalties", "Screenshot report: regional carriers are appealing to authorities over fuel shortages and exchange price rises, warning that transport companies, ambulance companies and agricultural enterprises may be affected by supply disruptions and penalties"),
+    fuel: T("Transport fuel supply / emergency services exposure", "Transport fuel supply / emergency services exposure"),
+    lossWeight: 6,
+    confidence: T("Medium: user-provided screenshot of regional press article, exact service impact still needs local confirmation", "Medium: user-provided screenshot of regional press article, exact service impact still needs local confirmation"),
+    source: "seed",
+    mediaUrl: "media/st-petersburg-leningrad-carriers-fuel-shortage-2026-07-01.jpg",
+    observedAt: "2026-07-01",
+    issueType: "regional_rationing",
+  },
+  {
     id: "kaliningrad-fuel-queues-chriso-video",
     type: "region",
     title: T("Kaliningrad: fuel queues, rationing and pump failures reported", "Kaliningrad: fuel queues, rationing and pump failures reported"),
@@ -632,6 +755,25 @@ const seedEvents = [
     mediaUrl: "https://ajvhsopxivqgdvkqytik.supabase.co/storage/v1/object/public/signal-videos/pending/2026-06-29-kaliningrad-chriso-2071677103037198632.mp4",
     observedAt: "2026-06-29",
     issueType: "regional_rationing",
+  },
+  {
+    id: "kaliningrad-daily-fuel-queue-vijesti-video",
+    type: "region",
+    title: T("Kaliningrad: daily long fuel queue reported", "Kaliningrad: daily long fuel queue reported"),
+    region: T("Kaliningrad Oblast", "Kaliningrad Oblast"),
+    place: T("Kaliningrad city area, rounded", "Kaliningrad city area, rounded"),
+    lat: 54.71,
+    lng: 20.51,
+    severity: "serious",
+    status: T("X video report describes a long fuel queue in Kaliningrad as a daily routine", "X video report describes a long fuel queue in Kaliningrad as a daily routine"),
+    fuel: T("Gasoline queue", "Gasoline queue"),
+    lossWeight: 4,
+    confidence: T("Medium: public X video source, exact station location not verified", "Medium: public X video source, exact station location not verified"),
+    source: "seed",
+    sourceUrl: "https://x.com/Vijesti11111/status/2071983878210744570",
+    mediaUrl: "media/kaliningrad-daily-fuel-queue-vijesti-2071983878210744570.mp4",
+    observedAt: "2026-06-30",
+    issueType: "long_queues",
   },
   {
     id: "kaliningrad-gasoline-shortage-comment-screenshot",
@@ -1819,6 +1961,10 @@ document.getElementById("signalForm").addEventListener("submit", async (event) =
       return;
     }
   }
+  const stationIntel = type === "station"
+    ? buildStationIntel()
+    : { text: "", fuel: tr("noFuel"), hasStationIntel: false }
+  const fullNote = stationIntel.text ? `${note}. ${stationIntel.text}` : note
   const item = {
     id: `local-${Date.now()}`,
     type,
@@ -1830,8 +1976,8 @@ document.getElementById("signalForm").addEventListener("submit", async (event) =
     observedAt,
     severity: type === "station" ? "serious" : "watch",
     issueType,
-    status: note,
-    fuel: tr("noFuel"),
+    status: fullNote,
+    fuel: stationIntel.hasStationIntel ? stationIntel.fuel : tr("noFuel"),
     lossWeight: type === "station" ? 4 : 2,
     confidence: tr("localConfidence"),
     source: "local",

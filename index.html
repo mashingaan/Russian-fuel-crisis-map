@@ -132,6 +132,57 @@
               <span data-i18n="noteLabel">Description</span>
               <textarea id="noteInput" rows="3" placeholder="40+ car queue, no AI-95, diesel by voucher" data-i18n-placeholder="notePlaceholder"></textarea>
             </label>
+            <div class="station-status-box">
+              <div class="station-status-head">
+                <span data-i18n="stationIntelTitle">Station intel</span>
+                <small data-i18n="stationIntelHint">optional, for gas-station signals</small>
+              </div>
+              <label class="field">
+                <span data-i18n="fuelStatusLabel">Fuel status</span>
+                <select id="fuelStatusInput">
+                  <option value="" data-i18n="fuelStatusUnknown">Unknown</option>
+                  <option value="available" data-i18n="fuelStatusAvailable">Fuel available</option>
+                  <option value="partial" data-i18n="fuelStatusPartial">Some grades missing</option>
+                  <option value="dry" data-i18n="fuelStatusDry">No fuel</option>
+                  <option value="limit" data-i18n="fuelStatusLimit">Limit or voucher sale</option>
+                </select>
+              </label>
+              <div class="fuel-grade-grid" aria-label="Fuel grades">
+                <label class="check">
+                  <input type="checkbox" name="fuelGrade" value="AI-92" />
+                  <span>AI-92</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="fuelGrade" value="AI-95" />
+                  <span>AI-95</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="fuelGrade" value="Diesel" />
+                  <span data-i18n="fuelDiesel">Diesel</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" name="fuelGrade" value="LPG" />
+                  <span data-i18n="fuelLpg">LPG</span>
+                </label>
+              </div>
+              <div class="form-grid">
+                <label class="field">
+                  <span data-i18n="queueLabel">Queue</span>
+                  <select id="queueInput">
+                    <option value="" data-i18n="queueUnknown">Unknown</option>
+                    <option value="none" data-i18n="queueNone">No queue</option>
+                    <option value="short" data-i18n="queueShort">2-5 cars</option>
+                    <option value="medium" data-i18n="queueMedium">6-15 cars</option>
+                    <option value="long" data-i18n="queueLong">15+ cars</option>
+                    <option value="extreme" data-i18n="queueExtreme">Road queue</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span data-i18n="priceLabel">Price or limit</span>
+                  <input id="priceInput" type="text" placeholder="AI-95 82 RUB, limit 30 L" data-i18n-placeholder="pricePlaceholder" />
+                </label>
+              </div>
+            </div>
             <div class="form-grid">
               <label class="field">
                 <span data-i18n="placeLabel">Region/city</span>
