@@ -7,8 +7,8 @@
   --text: oklch(94% 0.008 220);
   --muted: oklch(72% 0.018 220);
   --faint: oklch(55% 0.018 220);
-  --accent: oklch(75% 0.16 66);
-  --accent-strong: oklch(69% 0.18 58);
+  --accent: oklch(62% 0.2 29);
+  --accent-strong: oklch(57% 0.22 29);
   --danger: oklch(65% 0.19 28);
   --success: oklch(73% 0.13 165);
   --focus: oklch(76% 0.14 205);
