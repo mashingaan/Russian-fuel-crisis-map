@@ -10,7 +10,7 @@ window.FUEL_MAP_CONFIG = {
   videoBucket: "signal-videos",
   maxVideoBytes: 52428800,
   fuelDataProviders: {
-    priceProxyUrl: "",
+    priceProxyUrl: "https://YOUR_PROJECT.supabase.co/functions/v1/benzup-prices",
     availabilityProxyUrl: "",
     trafficProxyUrl: "",
   },

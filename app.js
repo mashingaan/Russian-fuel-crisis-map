@@ -379,6 +379,11 @@ const seedEvents = [
     status: T("Reuters screenshot report: Russia has started seaborne gasoline imports from India to tackle shortages, with at least 60,000 metric tons dispatched and another source citing two tankers carrying 30,000 to 40,000 tons each", "Reuters screenshot report: Russia has started seaborne gasoline imports from India to tackle shortages, with at least 60,000 metric tons dispatched and another source citing two tankers carrying 30,000 to 40,000 tons each"),
     fuel: T("Seaborne gasoline imports / shortage mitigation", "Seaborne gasoline imports / shortage mitigation"),
     lossWeight: 6,
+    impactMode: "support",
+    impactMetric: "60,000+ t",
+    impactMetricLabel: T("gasoline dispatched", "gasoline dispatched"),
+    impactScope: T("Seaborne import corridor, exact discharge port not mapped", "Seaborne import corridor, exact discharge port not mapped"),
+    impactCaveat: T("Supply-relief signal: do not read as affected stations or direct economic loss", "Supply-relief signal: do not read as affected stations or direct economic loss"),
     confidence: T("High for Reuters report screenshot, exact discharge port and cargo timing not mapped", "High for Reuters report screenshot, exact discharge port and cargo timing not mapped"),
     source: "reutersIndiaImports",
     sourceUrl: "https://x.com/bayraktar_1love/status/2072294656612635088",
@@ -398,6 +403,11 @@ const seedEvents = [
     status: T("X report citing Reuters says Kazakhstan is sending 50,000 tons of gasoline to Russia as humanitarian aid", "X report citing Reuters says Kazakhstan is sending 50,000 tons of gasoline to Russia as humanitarian aid"),
     fuel: T("Gasoline aid shipment / shortage mitigation", "Gasoline aid shipment / shortage mitigation"),
     lossWeight: 5,
+    impactMode: "support",
+    impactMetric: "50,000 t",
+    impactMetricLabel: T("planned gasoline aid", "planned gasoline aid"),
+    impactScope: T("July-August supply support, corridor rounded to Orenburg region", "July-August supply support, corridor rounded to Orenburg region"),
+    impactCaveat: T("Supply-relief signal from industry sources: not a local outage metric", "Supply-relief signal from industry sources: not a local outage metric"),
     confidence: T("Medium to high: public X post attributes the figure to Reuters, direct Reuters article not attached", "Medium to high: public X post attributes the figure to Reuters, direct Reuters article not attached"),
     source: "reutersKazakhstanAid",
     sourceUrl: "https://x.com/Maks_NAFO_FELLA/status/2072332812313629103",
@@ -420,6 +430,7 @@ const seedEvents = [
     observedAt: "2026-06-21",
     source: "rferlCrimeaHalt",
     sourceUrl: "https://www.rferl.org/a/fuel-crisis-hits-russian-occupied-crimea/33773280.html",
+    issueType: "regional_rationing",
   },
   {
     id: "sevastopol-evening-price-spike",
@@ -474,6 +485,7 @@ const seedEvents = [
     observedAt: "2026-06-29",
     source: "guardian",
     sourceUrl: "https://www.theguardian.com/world/2026/jun/29/ukraine-war-briefing-putin-expects-us-negotiators-moscow-fuel-rationing-siberia",
+    issueType: "purchase_limits",
   },
   {
     id: "krasnodar-stations",
@@ -491,6 +503,7 @@ const seedEvents = [
     observedAt: "2026-06-29",
     source: "ap",
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
+    issueType: "long_queues",
   },
   {
     id: "anapa-fuel-station-queue-maks-video",
@@ -527,6 +540,7 @@ const seedEvents = [
     observedAt: "2026-06-24",
     source: "rferlSpread",
     sourceUrl: "https://www.rferl.org/a/ukraine-russia-oil-refinery-fuel-shortages-kremlin/33787903.html",
+    issueType: "regional_rationing",
   },
   {
     id: "moscow-evening-shortage",
@@ -598,6 +612,8 @@ const seedEvents = [
     lossWeight: 4,
     confidence: T("Low", "Низкая"),
     source: "seed",
+    observedAt: "2026-06-24",
+    issueType: "price_spike",
   },
   {
     id: "zabaykalsky-amur-r297-gasoline-unavailable",
@@ -690,6 +706,7 @@ const seedEvents = [
     observedAt: "2026-06-27",
     source: "meduzaRegions",
     sourceUrl: "https://meduza.io/feature/2026/06/27/karta-benzinovogo-krizisa-v-kakih-regionah-rossii-topliva-ne-hvataet-osobenno-silno",
+    issueType: "regional_rationing",
   },
   {
     id: "bashkortostan-30-liters-per-car-idel-realii",
@@ -1135,6 +1152,7 @@ const seedEvents = [
     observedAt: "2026-06-28",
     source: "ap",
     sourceUrl: "https://apnews.com/article/88370faa1a49504438388f2854d7afd3",
+    issueType: "infrastructure_damage",
   },
   {
     id: "slavyansk-refinery-still-burning-bayraktar-image",
@@ -1189,6 +1207,7 @@ const seedEvents = [
     observedAt: "2026-06-28",
     source: "guardian",
     sourceUrl: "https://www.theguardian.com/world/2026/jun/29/ukraine-war-briefing-putin-expects-us-negotiators-moscow-fuel-rationing-siberia",
+    issueType: "infrastructure_damage",
   },
   {
     id: "ryazan-refinery",
@@ -1204,6 +1223,8 @@ const seedEvents = [
     lossWeight: 2,
     confidence: T("Low", "Низкая"),
     source: "seed",
+    observedAt: "2026-06-29",
+    issueType: "infrastructure_damage",
   },
   {
     id: "volgograd-refinery",
@@ -1219,6 +1240,8 @@ const seedEvents = [
     lossWeight: 2,
     confidence: T("Low", "Низкая"),
     source: "seed",
+    observedAt: "2026-06-29",
+    issueType: "infrastructure_damage",
   },
 ];
 
@@ -1558,7 +1581,17 @@ function prettyDate(value) {
   return date.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "short" });
 }
 
+function isSupplySupportSignal(signal) {
+  if (signal?.impactMode === "support") return true
+  const text = `${searchableText(signal?.title)} ${searchableText(signal?.status)} ${searchableText(signal?.fuel)} ${searchableText(signal?.place)}`.toLowerCase()
+  return text.includes("import") || text.includes("aid shipment") || text.includes("humanitarian aid") || text.includes("shortage mitigation") || text.includes("supply support")
+}
+
 function incidentSummary(incident) {
+  const supportSignal = incident.signals.find(isSupplySupportSignal)
+  if (supportSignal) {
+    return `${escapeHtml(textOf(supportSignal.status || incident.status) || tr("noDescription"))} Supply signal: ${escapeHtml(textOf(supportSignal.fuel || incident.fuel) || "fuel support")}.`
+  }
   const issueText = incident.issueTypes.map(issueLabel).join(", ");
   const latest = incident.signals[0];
   return `${escapeHtml(textOf(latest?.status || incident.status) || tr("noDescription"))} ${issueText ? `${tr("issueTypeLabel")}: ${escapeHtml(issueText)}.` : ""}`;
@@ -1612,12 +1645,40 @@ function timelineHtml(incident) {
   `;
 }
 
+function supportImpactSignal(incident) {
+  return incident.signals.find(isSupplySupportSignal)
+}
+
+function supportMetricFrom(signal) {
+  if (signal?.impactMetric) return textOf(signal.impactMetric)
+  const text = `${textOf(signal?.status)} ${textOf(signal?.title)}`
+  const match = text.match(/(\d[\d,\s]*)(?:\s*metric)?\s*(?:tons|t)\b/i)
+  return match ? `${match[1].replace(/\s+/g, " ").trim()} t` : "not quantified"
+}
+
+function supportImpactHtml(incident, signal) {
+  const metric = supportMetricFrom(signal)
+  const metricLabel = textOf(signal?.impactMetricLabel) || "supply volume"
+  const scope = textOf(signal?.impactScope) || textOf(signal?.place) || textOf(incident.place) || tr("noPlace")
+  const caveat = textOf(signal?.impactCaveat) || "Macro supply signal. It is not a station outage estimate or direct loss score."
+  return `
+    <div class="impact-grid impact-grid-contextual">
+      <div><strong>${escapeHtml(metric)}</strong><span>${escapeHtml(metricLabel)}</span></div>
+      <div><strong>${escapeHtml(textOf(signal?.fuel || incident.fuel) || "fuel supply")}</strong><span>supply effect</span></div>
+      <div><strong>${escapeHtml(scope)}</strong><span>mapped scope</span></div>
+      <div><strong>${escapeHtml(caveat)}</strong><span>impact reading</span></div>
+    </div>
+  `
+}
+
 function impactWeightText(value) {
   const weight = Number(value) || 1;
   return `${Math.max(1, Math.min(10, Math.round(weight)))}/10`;
 }
 
 function impactHtml(incident) {
+  const supportSignal = supportImpactSignal(incident)
+  if (supportSignal) return supportImpactHtml(incident, supportSignal)
   const stationEstimate = Math.max(1, Math.round((incident.lossWeight || 1) * (incident.severity === "critical" ? 8 : incident.severity === "serious" ? 5 : 2)));
   return `
     <div class="impact-grid">

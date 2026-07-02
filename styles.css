@@ -8,7 +8,7 @@
   --muted: oklch(69% 0.016 235);
   --weak: oklch(54% 0.018 235);
   --accent: oklch(62% 0.2 29);
-  --accent-2: oklch(72% 0.09 225);
+  --accent-2: var(--accent);
   --danger: oklch(62% 0.2 29);
   --warn: oklch(74% 0.16 78);
   --watch: oklch(70% 0.11 220);
@@ -352,7 +352,7 @@ textarea {
 }
 
 .file-control:focus-within {
-  box-shadow: 0 0 0 3px oklch(72% 0.09 225 / 0.18)
+  box-shadow: 0 0 0 3px oklch(62% 0.2 29 / 0.18)
 }
 
 input:focus,
@@ -360,7 +360,7 @@ select:focus,
 textarea:focus,
 button:focus-visible {
   border-color: var(--accent-2);
-  box-shadow: 0 0 0 3px oklch(72% 0.09 225 / 0.18);
+  box-shadow: 0 0 0 3px oklch(62% 0.2 29 / 0.18);
 }
 
 .segmented {
@@ -925,6 +925,17 @@ button:focus-visible {
 .impact-grid span {
   color: var(--muted);
   font-size: 12px;
+}
+
+.impact-grid-contextual strong {
+  color: oklch(86% 0.016 235);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.impact-grid-contextual div:first-child strong {
+  color: var(--accent);
+  font-size: 20px;
 }
 
 .incident-marker {
