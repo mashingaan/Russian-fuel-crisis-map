@@ -1426,7 +1426,8 @@ function applyTranslations() {
   document.querySelector(".primary-action").textContent = publicSyncEnabled ? tr("submitReview") : tr("addSignal");
   updateVideoFileControl()
   setSubmissionStatus(publicSyncEnabled ? tr("publicModeReady") : tr("localModeHint"));
-  if (state.selected) selectItem(state.selected);
+  renderOpenDetailWindows()
+  if (state.selected) updateFocusFromItem(state.selected)
   else {
     document.getElementById("focusTitle").textContent = tr("overviewTitle");
     document.getElementById("focusSubtitle").textContent = tr("overviewSubtitle");
@@ -1841,47 +1842,88 @@ function impactHtml(incident) {
   `
 }
 
-function renderIncidentPanel() {
-  const incident = state.selected;
-  const panel = document.getElementById("incidentPanel");
-  if (!incident?.signals) {
-    panel.innerHTML = "";
-    return;
-  }
-  if (state.selectedTab === "timeline") {
-    panel.innerHTML = timelineHtml(incident);
-  } else if (state.selectedTab === "evidence") {
-    panel.innerHTML = `<div class="evidence-list">${incident.signals.map(signalCard).join("")}</div>`;
-  } else if (state.selectedTab === "impact") {
-    panel.innerHTML = impactHtml(incident);
-  } else {
-    panel.innerHTML = `
-      <div class="overview-block">
-        <p>${incidentSummary(incident)}</p>
-        <p>${escapeHtml(textOf(incident.place) || tr("noPlace"))}. ${incident.signals.length} signal${incident.signals.length === 1 ? "" : "s"} are grouped into this incident. Map point is rounded when needed.</p>
-      </div>
-    `;
-  }
+function incidentPanelHtml(incident, tab) {
+  if (!incident?.signals) return ""
+  if (tab === "timeline") return timelineHtml(incident)
+  if (tab === "evidence") return `<div class="evidence-list">${incident.signals.map(signalCard).join("")}</div>`
+  if (tab === "impact") return impactHtml(incident)
+  return `
+    <div class="overview-block">
+      <p>${incidentSummary(incident)}</p>
+      <p>${escapeHtml(textOf(incident.place) || tr("noPlace"))}. ${incident.signals.length} signal${incident.signals.length === 1 ? "" : "s"} are grouped into this incident. Map point is rounded when needed.</p>
+    </div>
+  `
 }
 
-function clearSelection() {
-  state.selected = null;
-  state.selectedTab = "overview";
-  document.querySelectorAll(".incident-tab").forEach((item) => item.classList.toggle("active", item.dataset.tab === "overview"));
-  document.getElementById("detailDrawer").hidden = true;
-  document.getElementById("incidentPanel").innerHTML = "";
-  applyTranslations();
-}
-
-const detailDrawer = document.getElementById("detailDrawer")
-const detailDragSelector = "#detailDragHandle, .incident-head"
+const detailTemplate = document.getElementById("detailDrawerTemplate")
+const detailWindowLayer = document.querySelector(".map-stage")
+const openDetailWindows = new Map()
+const detailDragSelector = ".detail-drag-handle, .incident-head"
 const detailInteractiveSelector = "button, a, input, select, textarea, video, .incident-tabs, .incident-panel"
-let detailDrawerPosition = null
-let detailDrawerDrag = null
+let activeDetailWindowKey = null
+let detailWindowZ = 1100
 
-function clampDetailDrawer(left, top) {
+function detailKeyFor(item) {
+  if (item.id) return `item:${item.id}`
+  if (Array.isArray(item.signals)) return `incident:${item.id || textOf(item.title)}`
+  return `signal:${textOf(item.title)}:${textOf(item.region)}:${textOf(item.place)}`
+}
+
+function updateFocusFromItem(item) {
+  const isIncident = Array.isArray(item.signals)
+  document.getElementById("focusTitle").textContent = textOf(item.region) || textOf(item.title)
+  document.getElementById("focusSubtitle").textContent = isIncident ? `${textOf(item.place) || textOf(item.region)} В· ${item.signals.length} signal${item.signals.length === 1 ? "" : "s"}` : textOf(item.status) || tr("signalSelected")
+}
+
+function renderDetailWindow(entry) {
+  const node = entry.node
+  const item = entry.item
+  const isIncident = Array.isArray(item.signals)
+  node.querySelector("[data-i18n='selectedEyebrow']").textContent = tr("selectedEyebrow")
+  node.querySelector("[data-detail-title]").textContent = textOf(item.title)
+  node.querySelector("[data-incident-meta]").textContent = isIncident ? incidentMetaText(item) : "Aggregated public signals"
+  node.querySelector("[data-incident-tabs]").hidden = !isIncident
+  node.querySelector("[data-incident-stats]").hidden = !isIncident
+  node.querySelectorAll(".incident-tab").forEach((button) => {
+    button.classList.toggle("active", button.dataset.tab === entry.tab)
+  })
+  if (isIncident) {
+    node.querySelector("[data-detail-text]").innerHTML = incidentSummary(item)
+    node.querySelector("[data-incident-stats]").innerHTML = `
+      <span>${escapeHtml(item.severity)}</span>
+      <span>${item.signals.length} signal${item.signals.length === 1 ? "" : "s"}</span>
+      <span>${item.sources.length} source${item.sources.length === 1 ? "" : "s"}</span>
+      <span>${escapeHtml(item.kinds.join(" / "))}</span>
+    `
+    node.querySelector("[data-incident-panel]").innerHTML = incidentPanelHtml(item, entry.tab)
+  } else {
+    const mediaUrl = item.sourceUrl || item.mediaUrl || ""
+    node.querySelector("[data-detail-text]").innerHTML = `${escapeHtml(textOf(item.place) || tr("noPlace"))}. ${
+      item.observedAt ? `${escapeHtml(item.observedAt)}. ` : ""
+    }${escapeHtml(textOf(item.status) || "")} ${tr("issueTypeLabel")}: ${escapeHtml(issueLabel(issueTypeOf(item)))}. ${tr("verification")}: ${
+      escapeHtml(textOf(item.confidence) || tr("noFuel"))
+    }.${mediaPreviewHtml(mediaUrl)}`
+    node.querySelector("[data-incident-panel]").innerHTML = ""
+  }
+}
+
+function renderOpenDetailWindows() {
+  openDetailWindows.forEach((entry) => {
+    renderDetailWindow(entry)
+  })
+}
+
+function bringDetailWindowToFront(entry) {
+  activeDetailWindowKey = entry.key
+  state.selected = entry.item
+  state.selectedTab = entry.tab
+  entry.node.style.zIndex = String(++detailWindowZ)
+  updateFocusFromItem(entry.item)
+}
+
+function clampDetailDrawer(entry, left, top) {
   const stageBox = document.querySelector(".map-stage").getBoundingClientRect()
-  const drawerBox = detailDrawer.getBoundingClientRect()
+  const drawerBox = entry.node.getBoundingClientRect()
   const pad = 12
   const maxLeft = Math.max(pad, stageBox.width - drawerBox.width - pad)
   const maxTop = Math.max(pad, stageBox.height - drawerBox.height - pad)
@@ -1891,18 +1933,22 @@ function clampDetailDrawer(left, top) {
   }
 }
 
-function placeDetailDrawer(left, top) {
-  const next = clampDetailDrawer(left, top)
-  detailDrawer.style.left = `${next.left}px`
-  detailDrawer.style.top = `${next.top}px`
-  detailDrawer.style.right = "auto"
-  detailDrawer.style.bottom = "auto"
-  detailDrawerPosition = next
+function placeDetailDrawer(entry, left, top) {
+  const next = clampDetailDrawer(entry, left, top)
+  entry.node.style.left = `${next.left}px`
+  entry.node.style.top = `${next.top}px`
+  entry.node.style.right = "auto"
+  entry.node.style.bottom = "auto"
+  entry.position = next
 }
 
-function clampPlacedDetailDrawer() {
-  if (detailDrawer.hidden || !detailDrawerPosition) return
-  placeDetailDrawer(detailDrawerPosition.left, detailDrawerPosition.top)
+function clampPlacedDetailDrawer(entry) {
+  if (!entry.position) return
+  placeDetailDrawer(entry, entry.position.left, entry.position.top)
+}
+
+function clampPlacedDetailDrawers() {
+  openDetailWindows.forEach(clampPlacedDetailDrawer)
 }
 
 function canDragDetailDrawer(target) {
@@ -1911,38 +1957,113 @@ function canDragDetailDrawer(target) {
   return true
 }
 
-detailDrawer.addEventListener("pointerdown", (event) => {
-  if (event.pointerType === "mouse" && event.button !== 0) return
-  if (!canDragDetailDrawer(event.target)) return
-  event.preventDefault()
-  placeDetailDrawer(detailDrawer.offsetLeft, detailDrawer.offsetTop)
-  detailDrawerDrag = {
-    pointerId: event.pointerId,
-    startX: event.clientX,
-    startY: event.clientY,
-    startLeft: detailDrawerPosition.left,
-    startTop: detailDrawerPosition.top,
+function defaultDetailPosition(node) {
+  const stageBox = document.querySelector(".map-stage").getBoundingClientRect()
+  const drawerBox = node.getBoundingClientRect()
+  const offset = (openDetailWindows.size % 6) * 28
+  return {
+    left: Math.max(12, stageBox.width - drawerBox.width - 18 - offset),
+    top: Math.max(12, stageBox.height - drawerBox.height - 18 - offset),
   }
-  detailDrawer.classList.add("dragging")
-  detailDrawer.setPointerCapture(event.pointerId)
-})
-
-detailDrawer.addEventListener("pointermove", (event) => {
-  if (!detailDrawerDrag || event.pointerId !== detailDrawerDrag.pointerId) return
-  const nextLeft = detailDrawerDrag.startLeft + event.clientX - detailDrawerDrag.startX
-  const nextTop = detailDrawerDrag.startTop + event.clientY - detailDrawerDrag.startY
-  placeDetailDrawer(nextLeft, nextTop)
-})
-
-function endDetailDrawerDrag(event) {
-  if (!detailDrawerDrag || event.pointerId !== detailDrawerDrag.pointerId) return
-  detailDrawerDrag = null
-  detailDrawer.classList.remove("dragging")
 }
 
-detailDrawer.addEventListener("pointerup", endDetailDrawerDrag)
-detailDrawer.addEventListener("pointercancel", endDetailDrawerDrag)
-window.addEventListener("resize", clampPlacedDetailDrawer)
+function closeDetailWindow(key) {
+  const entry = openDetailWindows.get(key)
+  if (!entry) return
+  entry.node.remove()
+  openDetailWindows.delete(key)
+  if (activeDetailWindowKey === key) {
+    const next = [...openDetailWindows.values()].at(-1)
+    if (next) bringDetailWindowToFront(next)
+    else {
+      activeDetailWindowKey = null
+      state.selected = null
+      state.selectedTab = "overview"
+      document.getElementById("focusTitle").textContent = tr("overviewTitle")
+      document.getElementById("focusSubtitle").textContent = tr("overviewSubtitle")
+    }
+  }
+}
+
+function closeActiveDetailWindow() {
+  if (activeDetailWindowKey) closeDetailWindow(activeDetailWindowKey)
+}
+
+function clearSelection() {
+  Array.from(openDetailWindows.keys()).forEach(closeDetailWindow)
+}
+
+function attachDetailWindowEvents(entry) {
+  const node = entry.node
+  node.querySelector("[data-detail-close]").addEventListener("click", () => closeDetailWindow(entry.key))
+  node.querySelectorAll(".incident-tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      entry.tab = button.dataset.tab
+      state.selectedTab = entry.tab
+      bringDetailWindowToFront(entry)
+      renderDetailWindow(entry)
+    })
+  })
+  node.addEventListener("pointerdown", (event) => {
+    bringDetailWindowToFront(entry)
+    if (event.pointerType === "mouse" && event.button !== 0) return
+    if (!canDragDetailDrawer(event.target)) return
+    event.preventDefault()
+    placeDetailDrawer(entry, node.offsetLeft, node.offsetTop)
+    entry.drag = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: entry.position.left,
+      startTop: entry.position.top,
+    }
+    node.classList.add("dragging")
+    node.setPointerCapture(event.pointerId)
+  })
+  node.addEventListener("pointermove", (event) => {
+    if (!entry.drag || event.pointerId !== entry.drag.pointerId) return
+    const nextLeft = entry.drag.startLeft + event.clientX - entry.drag.startX
+    const nextTop = entry.drag.startTop + event.clientY - entry.drag.startY
+    placeDetailDrawer(entry, nextLeft, nextTop)
+  })
+  const endDrag = (event) => {
+    if (!entry.drag || event.pointerId !== entry.drag.pointerId) return
+    entry.drag = null
+    node.classList.remove("dragging")
+  }
+  node.addEventListener("pointerup", endDrag)
+  node.addEventListener("pointercancel", endDrag)
+}
+
+function selectItem(item) {
+  const key = detailKeyFor(item)
+  let entry = openDetailWindows.get(key)
+  if (entry) {
+    entry.item = item
+    renderDetailWindow(entry)
+    bringDetailWindowToFront(entry)
+    clampPlacedDetailDrawer(entry)
+    return
+  }
+  const node = detailTemplate.content.firstElementChild.cloneNode(true)
+  entry = {
+    key,
+    item,
+    node,
+    tab: "overview",
+    position: null,
+    drag: null,
+  }
+  openDetailWindows.set(key, entry)
+  detailWindowLayer.appendChild(node)
+  attachDetailWindowEvents(entry)
+  renderDetailWindow(entry)
+  bringDetailWindowToFront(entry)
+  const start = defaultDetailPosition(node)
+  placeDetailDrawer(entry, start.left, start.top)
+}
+
+window.addEventListener("resize", clampPlacedDetailDrawers)
 
 function render() {
   updateClearLocalButton()
@@ -1988,7 +2109,7 @@ function render() {
   updateMetrics(events);
 }
 
-function selectItem(item) {
+function legacySingleDetailSelectItem(item) {
   state.selected = item;
   document.getElementById("detailDrawer").hidden = false;
   document.getElementById("detailTitle").textContent = textOf(item.title);
@@ -2211,7 +2332,7 @@ function setPanelCollapsed(collapsed) {
   localStorage.setItem("fuelCrisisPanelCollapsed", String(collapsed))
   requestAnimationFrame(() => {
     map.invalidateSize()
-    clampPlacedDetailDrawer()
+    clampPlacedDetailDrawers()
   })
 }
 
@@ -2252,19 +2373,9 @@ document.getElementById("issueFilter").addEventListener("change", (event) => {
   render();
 });
 
-document.querySelectorAll(".incident-tab").forEach((button) => {
-  button.addEventListener("click", () => {
-    state.selectedTab = button.dataset.tab;
-    document.querySelectorAll(".incident-tab").forEach((item) => item.classList.toggle("active", item === button));
-    renderIncidentPanel();
-  });
-});
-
-document.getElementById("closeDetail").addEventListener("click", clearSelection);
-
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && state.selected) {
-    clearSelection();
+    closeActiveDetailWindow()
   }
 });
 

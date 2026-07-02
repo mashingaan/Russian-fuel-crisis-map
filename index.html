@@ -272,30 +272,32 @@
           <span><i class="legend-dot watch"></i> <span data-i18n="watch">watch</span></span>
           <span><i class="legend-square"></i> <span data-i18n="legendInfra">refinery / infrastructure</span></span>
         </div>
-        <section class="detail-drawer" id="detailDrawer" aria-live="polite" hidden>
+        <template id="detailDrawerTemplate">
+        <section class="detail-drawer" aria-live="polite">
           <div class="detail-drawer-tools">
-            <div id="detailDragHandle" class="detail-drag-handle" title="Drag panel" aria-hidden="true">
+            <div class="detail-drag-handle" title="Drag panel" aria-hidden="true">
               <span></span>
               <span></span>
               <span></span>
             </div>
-            <button id="closeDetail" class="detail-close" type="button" title="Close selected item" aria-label="Close selected item">×</button>
+            <button class="detail-close" data-detail-close type="button" title="Close selected item" aria-label="Close selected item">×</button>
           </div>
           <div class="incident-head">
             <p class="eyebrow" data-i18n="selectedEyebrow">Selected item</p>
-            <h2 id="detailTitle">Click a point or region</h2>
-            <p id="incidentMeta" class="incident-meta">Aggregated public signals</p>
+            <h2 data-detail-title>Click a point or region</h2>
+            <p class="incident-meta" data-incident-meta>Aggregated public signals</p>
           </div>
-          <p id="detailText">The map shows aggregated public signals. Exact sensitive infrastructure coordinates are not exposed.</p>
-          <div id="incidentStats" class="incident-stats" hidden></div>
-          <div id="incidentTabs" class="incident-tabs" hidden>
+          <p data-detail-text>The map shows aggregated public signals. Exact sensitive infrastructure coordinates are not exposed.</p>
+          <div class="incident-stats" data-incident-stats hidden></div>
+          <div class="incident-tabs" data-incident-tabs hidden>
             <button class="incident-tab active" type="button" data-tab="overview">Overview</button>
             <button class="incident-tab" type="button" data-tab="timeline">Timeline</button>
             <button class="incident-tab" type="button" data-tab="evidence">Evidence</button>
             <button class="incident-tab" type="button" data-tab="impact">Impact</button>
           </div>
-          <div id="incidentPanel" class="incident-panel"></div>
+          <div class="incident-panel" data-incident-panel></div>
         </section>
+        </template>
       </main>
     </div>
 
