@@ -1245,6 +1245,110 @@ button:focus-visible {
   justify-content: flex-end
 }
 
+.toolbar {
+  gap: 4px
+}
+
+.toolbar {
+  padding: 4px
+}
+
+.toolbar {
+  border-radius: 999px
+}
+
+.toolbar {
+  background: oklch(14% 0.011 235 / 0.72)
+}
+
+.toolbar {
+  box-shadow: 0 10px 26px oklch(5% 0.01 235 / 0.28)
+}
+
+.toolbar {
+  backdrop-filter: blur(8px)
+}
+
+.tool-button {
+  display: grid
+}
+
+.tool-button {
+  place-items: center
+}
+
+.tool-button {
+  border-color: transparent
+}
+
+.tool-button {
+  border-radius: 999px
+}
+
+.tool-button {
+  background: transparent
+}
+
+.tool-button {
+  color: var(--muted)
+}
+
+.tool-button svg {
+  width: 16px
+}
+
+.tool-button svg {
+  height: 16px
+}
+
+.tool-button svg {
+  fill: none
+}
+
+.tool-button svg {
+  stroke: currentColor
+}
+
+.tool-button svg {
+  stroke-width: 1.9
+}
+
+.tool-button svg {
+  stroke-linecap: round
+}
+
+.tool-button svg {
+  stroke-linejoin: round
+}
+
+.tool-button:hover,
+.tool-button:focus-visible {
+  border-color: var(--line)
+}
+
+.tool-button:hover,
+.tool-button:focus-visible {
+  background: oklch(21% 0.014 235 / 0.86)
+}
+
+.tool-button:hover,
+.tool-button:focus-visible {
+  color: var(--text)
+}
+
+#clearLocal:disabled {
+  display: none
+}
+
+#clearLocal:not(:disabled) {
+  color: var(--muted)
+}
+
+#clearLocal:not(:disabled):hover,
+#clearLocal:not(:disabled):focus-visible {
+  color: var(--danger)
+}
+
 @media (max-width: 560px) {
   .legend {
     right: 52px
