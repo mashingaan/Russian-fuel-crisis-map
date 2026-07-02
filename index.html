@@ -15,6 +15,13 @@
   <body>
     <div class="app-shell">
       <aside class="side-panel" aria-label="Map control panel">
+        <button id="panelToggle" class="panel-toggle" type="button" aria-expanded="true" aria-controls="sidePanelContent" title="Hide controls">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+          <span class="panel-toggle-text">Controls</span>
+        </button>
+        <div id="sidePanelContent" class="side-panel-content">
         <header class="masthead">
           <div>
             <p class="eyebrow" data-i18n="eyebrow">OSINT map</p>
@@ -227,6 +234,7 @@
             <a href="https://www.kremlin.ru/events/president/news/80174/print" target="_blank" rel="noreferrer">Кремль</a>
           </div>
         </section>
+        </div>
       </aside>
 
       <main class="map-stage">
@@ -266,6 +274,11 @@
         </div>
         <section class="detail-drawer" id="detailDrawer" aria-live="polite" hidden>
           <div class="detail-drawer-tools">
+            <div id="detailDragHandle" class="detail-drag-handle" title="Drag panel" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
             <button id="closeDetail" class="detail-close" type="button" title="Close selected item" aria-label="Close selected item">×</button>
           </div>
           <div class="incident-head">

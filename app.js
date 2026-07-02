@@ -1873,6 +1873,77 @@ function clearSelection() {
   applyTranslations();
 }
 
+const detailDrawer = document.getElementById("detailDrawer")
+const detailDragSelector = "#detailDragHandle, .incident-head"
+const detailInteractiveSelector = "button, a, input, select, textarea, video, .incident-tabs, .incident-panel"
+let detailDrawerPosition = null
+let detailDrawerDrag = null
+
+function clampDetailDrawer(left, top) {
+  const stageBox = document.querySelector(".map-stage").getBoundingClientRect()
+  const drawerBox = detailDrawer.getBoundingClientRect()
+  const pad = 12
+  const maxLeft = Math.max(pad, stageBox.width - drawerBox.width - pad)
+  const maxTop = Math.max(pad, stageBox.height - drawerBox.height - pad)
+  return {
+    left: Math.min(Math.max(left, pad), maxLeft),
+    top: Math.min(Math.max(top, pad), maxTop),
+  }
+}
+
+function placeDetailDrawer(left, top) {
+  const next = clampDetailDrawer(left, top)
+  detailDrawer.style.left = `${next.left}px`
+  detailDrawer.style.top = `${next.top}px`
+  detailDrawer.style.right = "auto"
+  detailDrawer.style.bottom = "auto"
+  detailDrawerPosition = next
+}
+
+function clampPlacedDetailDrawer() {
+  if (detailDrawer.hidden || !detailDrawerPosition) return
+  placeDetailDrawer(detailDrawerPosition.left, detailDrawerPosition.top)
+}
+
+function canDragDetailDrawer(target) {
+  if (!target.closest(detailDragSelector)) return false
+  if (target.closest(detailInteractiveSelector)) return false
+  return true
+}
+
+detailDrawer.addEventListener("pointerdown", (event) => {
+  if (event.pointerType === "mouse" && event.button !== 0) return
+  if (!canDragDetailDrawer(event.target)) return
+  event.preventDefault()
+  placeDetailDrawer(detailDrawer.offsetLeft, detailDrawer.offsetTop)
+  detailDrawerDrag = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    startLeft: detailDrawerPosition.left,
+    startTop: detailDrawerPosition.top,
+  }
+  detailDrawer.classList.add("dragging")
+  detailDrawer.setPointerCapture(event.pointerId)
+})
+
+detailDrawer.addEventListener("pointermove", (event) => {
+  if (!detailDrawerDrag || event.pointerId !== detailDrawerDrag.pointerId) return
+  const nextLeft = detailDrawerDrag.startLeft + event.clientX - detailDrawerDrag.startX
+  const nextTop = detailDrawerDrag.startTop + event.clientY - detailDrawerDrag.startY
+  placeDetailDrawer(nextLeft, nextTop)
+})
+
+function endDetailDrawerDrag(event) {
+  if (!detailDrawerDrag || event.pointerId !== detailDrawerDrag.pointerId) return
+  detailDrawerDrag = null
+  detailDrawer.classList.remove("dragging")
+}
+
+detailDrawer.addEventListener("pointerup", endDetailDrawerDrag)
+detailDrawer.addEventListener("pointercancel", endDetailDrawerDrag)
+window.addEventListener("resize", clampPlacedDetailDrawer)
+
 function render() {
   updateClearLocalButton()
   markerLayer.clearLayers();
@@ -2128,6 +2199,27 @@ function buildDigest() {
 
   return `Russia fuel stress map: ${affectedRegions} regions with reported stress, ${stationsAtRisk} gas stations in shortage zones, estimated damage ${dailyLoss} RUB bn/day.\n\n${bullets}\n\nData: public sources + uploaded user videos. Sensitive infrastructure coordinates are rounded.`;
 }
+
+const panelToggle = document.getElementById("panelToggle")
+const panelContent = document.getElementById("sidePanelContent")
+
+function setPanelCollapsed(collapsed) {
+  document.body.classList.toggle("panel-collapsed", collapsed)
+  panelToggle.setAttribute("aria-expanded", String(!collapsed))
+  panelToggle.title = collapsed ? "Show controls" : "Hide controls"
+  panelContent.setAttribute("aria-hidden", String(collapsed))
+  localStorage.setItem("fuelCrisisPanelCollapsed", String(collapsed))
+  requestAnimationFrame(() => {
+    map.invalidateSize()
+    clampPlacedDetailDrawer()
+  })
+}
+
+setPanelCollapsed(localStorage.getItem("fuelCrisisPanelCollapsed") === "true")
+
+panelToggle.addEventListener("click", () => {
+  setPanelCollapsed(!document.body.classList.contains("panel-collapsed"))
+})
 
 document.querySelectorAll(".lang-button").forEach((button) => {
   button.addEventListener("click", () => {
