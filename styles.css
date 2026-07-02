@@ -1237,6 +1237,14 @@ button:focus-visible {
   right: 52px
 }
 
+.status-line {
+  display: none
+}
+
+.topbar {
+  justify-content: flex-end
+}
+
 @media (max-width: 560px) {
   .legend {
     right: 52px

@@ -1174,6 +1174,62 @@ const seedEvents = [
     issueType: "infrastructure_damage",
   },
   {
+    id: "kstovo-lukoil-refinery-process-unit-fire-osinttechnical-video",
+    type: "infrastructure",
+    title: T("Kstovo: Lukoil refinery process unit fire reported", "Kstovo: Lukoil refinery process unit fire reported"),
+    region: T("Nizhny Novgorod Oblast", "Nizhny Novgorod Oblast"),
+    place: T("Kstovo refinery area, rounded", "Kstovo refinery area, rounded"),
+    lat: 56.13,
+    lng: 44.18,
+    severity: "critical",
+    status: T("X video report: Ukrainian attack drones reportedly hit Russia's Kstovo oil refinery, setting a process unit ablaze", "X video report: Ukrainian attack drones reportedly hit Russia's Kstovo oil refinery, setting a process unit ablaze"),
+    fuel: T("Oil refinery process unit fire", "Oil refinery process unit fire"),
+    lossWeight: 8,
+    confidence: T("Medium: public X video source, refinery location confirmed from open sources, damage extent needs further confirmation", "Medium: public X video source, refinery location confirmed from open sources, damage extent needs further confirmation"),
+    source: "seed",
+    sourceUrl: "https://x.com/Osinttechnical/status/2072529990575329411",
+    mediaUrl: "media/kstovo-lukoil-refinery-process-unit-fire-osinttechnical-2072529990575329411.mp4",
+    observedAt: "2026-07-02",
+    issueType: "infrastructure_damage",
+  },
+  {
+    id: "kstovo-avt6-unit-capacity-offline-jayinkyiv-image",
+    type: "infrastructure",
+    title: T("Kstovo: AVT-6 unit reportedly taken offline", "Kstovo: AVT-6 unit reportedly taken offline"),
+    region: T("Nizhny Novgorod Oblast", "Nizhny Novgorod Oblast"),
+    place: T("Kstovo refinery area, rounded", "Kstovo refinery area, rounded"),
+    lat: 56.13,
+    lng: 44.18,
+    severity: "critical",
+    status: T("X image analysis claims the struck facility was the AVT-6 unit, taking 190,000 barrels per day offline, about 53% of the plant's processing capacity", "X image analysis claims the struck facility was the AVT-6 unit, taking 190,000 barrels per day offline, about 53% of the plant's processing capacity"),
+    fuel: T("AVT-6 primary processing unit / claimed capacity offline", "AVT-6 primary processing unit / claimed capacity offline"),
+    lossWeight: 9,
+    confidence: T("Medium: public X image analysis, capacity claim needs corroboration from plant or industry reporting", "Medium: public X image analysis, capacity claim needs corroboration from plant or industry reporting"),
+    source: "seed",
+    sourceUrl: "https://x.com/JayinKyiv/status/2072548832533963213",
+    mediaUrl: "media/kstovo-avt6-unit-190kbpd-capacity-jayinkyiv-2072548832533963213.jpg",
+    observedAt: "2026-07-02",
+    issueType: "infrastructure_damage",
+  },
+  {
+    id: "kstovo-smoke-plume-supernova-image",
+    type: "infrastructure",
+    title: T("Kstovo: smoke plume photo linked to refinery strike", "Kstovo: smoke plume photo linked to refinery strike"),
+    region: T("Nizhny Novgorod Oblast", "Nizhny Novgorod Oblast"),
+    place: T("Kstovo refinery area, rounded", "Kstovo refinery area, rounded"),
+    lat: 56.13,
+    lng: 44.18,
+    severity: "serious",
+    status: T("User-provided image shows a smoke plume reportedly connected to the Kstovo refinery strike area", "User-provided image shows a smoke plume reportedly connected to the Kstovo refinery strike area"),
+    fuel: T("Refinery smoke plume / visual evidence", "Refinery smoke plume / visual evidence"),
+    lossWeight: 3,
+    confidence: T("Low to medium: user-provided image, visible smoke but exact viewpoint and timestamp need confirmation", "Low to medium: user-provided image, visible smoke but exact viewpoint and timestamp need confirmation"),
+    source: "seed",
+    mediaUrl: "media/kstovo-smoke-plume-supernova-2026-07-02.jpg",
+    observedAt: "2026-07-02",
+    issueType: "infrastructure_damage",
+  },
+  {
     id: "novoazovsk-bridge-land-corridor",
     type: "infrastructure",
     title: T("Novoazovsk: bridge damage on land corridor to Crimea", "Novoazovsk: bridge damage on land corridor to Crimea"),
@@ -1676,7 +1732,7 @@ function impactWeightText(value) {
   return `${Math.max(1, Math.min(10, Math.round(weight)))}/10`;
 }
 
-function impactHtml(incident) {
+function legacyImpactHtml(incident) {
   const supportSignal = supportImpactSignal(incident)
   if (supportSignal) return supportImpactHtml(incident, supportSignal)
   const stationEstimate = Math.max(1, Math.round((incident.lossWeight || 1) * (incident.severity === "critical" ? 8 : incident.severity === "serious" ? 5 : 2)));
@@ -1688,6 +1744,63 @@ function impactHtml(incident) {
       <div><strong>${incident.kinds.join(", ")}</strong><span>signal classes</span></div>
     </div>
   `;
+}
+
+function impactEvidenceText(incident) {
+  const sourceCount = incident.sources.length
+  const signalCount = incident.signals.length
+  const confidenceText = textOf(incident.confidence) || tr("localConfidence")
+  const level = /low/i.test(confidenceText)
+    ? "needs confirmation"
+    : sourceCount > 1
+      ? "cross-source"
+      : "single-source"
+  return `${level}, ${signalCount} signal${signalCount === 1 ? "" : "s"}, ${sourceCount} source${sourceCount === 1 ? "" : "s"}`
+}
+
+function impactReadingText(incident) {
+  const issues = new Set(incident.issueTypes)
+  if (incident.kinds.includes("infrastructure")) {
+    return incident.severity === "critical" ? "plant disruption risk" : "infrastructure exposure"
+  }
+  if (issues.has("regional_rationing") || issues.has("purchase_limits")) return "access restrictions"
+  if (issues.has("station_closure") || issues.has("no_gasoline") || issues.has("no_diesel")) return "local availability shock"
+  if (issues.has("long_queues")) return "consumer queue pressure"
+  if (issues.has("price_spike")) return "price stress"
+  return "early warning signal"
+}
+
+function impactScopeText(incident) {
+  if (incident.kinds.includes("infrastructure")) return "supply-side risk, exact capacity effect unverified"
+  if (incident.signals.length > 1) return "clustered public reports, not a station census"
+  return "point report, mapped area is rounded"
+}
+
+function impactWhyText(incident) {
+  const issues = new Set(incident.issueTypes)
+  const reasons = []
+  if (issues.has("regional_rationing")) reasons.push("rationing")
+  if (issues.has("purchase_limits")) reasons.push("purchase limits")
+  if (issues.has("long_queues")) reasons.push("queues")
+  if (issues.has("station_closure")) reasons.push("closures")
+  if (issues.has("no_gasoline")) reasons.push("gasoline shortages")
+  if (issues.has("no_diesel")) reasons.push("diesel shortages")
+  if (issues.has("price_spike")) reasons.push("price spike")
+  if (issues.has("infrastructure_damage")) reasons.push("reported infrastructure damage")
+  return reasons.length ? reasons.join(", ") : incident.kinds.join(", ")
+}
+
+function impactHtml(incident) {
+  const supportSignal = supportImpactSignal(incident)
+  if (supportSignal) return supportImpactHtml(incident, supportSignal)
+  return `
+    <div class="impact-grid impact-grid-contextual">
+      <div><strong>${escapeHtml(impactReadingText(incident))}</strong><span>operational reading</span></div>
+      <div><strong>${escapeHtml(impactWhyText(incident))}</strong><span>observable basis</span></div>
+      <div><strong>${escapeHtml(impactEvidenceText(incident))}</strong><span>evidence strength</span></div>
+      <div><strong>${escapeHtml(impactScopeText(incident))}</strong><span>interpretation limit</span></div>
+    </div>
+  `
 }
 
 function renderIncidentPanel() {
